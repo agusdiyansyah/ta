@@ -15,7 +15,9 @@ class Jadwal extends MX_Controller {
 
 		$sql = 'select id_dosen from dosen';
 		$jumlah_penguji   = 3;
-		$jam_mulai        = "07:00";
+		$awal             = "07:00";
+		$batas_ujian	  = "11:00";
+		$kondisi          = "<";
 		$waktu_istirahat  = "00:05"; // 5 menit
 		$waktu_ujian      = "00:45"; // 45 menit
 		$batas = floor(($this->m_jadwal->query($sql)->num_rows()) / $jumlah_penguji);
@@ -42,14 +44,24 @@ class Jadwal extends MX_Controller {
 		$r = 0;
 		$id = 'id_mhs';
 		$jam_selesai = '';
+		$batas_hari = 0;
+		$jam_mulai = $awal;
+		$pindah_hari = (($kondisi == ">") ? $batas_ujian : $this->jam($batas_ujian, $waktu_ujian, "-"));
 		foreach ($mahasiswa->result() as $rec) {
 			$no++;
 			$r++;
+
+			if (strtotime($jam_mulai) >= strtotime($pindah_hari)) {
+				$batas_hari = 0;
+				$jam_mulai  = $awal;
+			}
+
 			if (($no-1) % $batas == 0) {
-				if ($no == $offset+1) {
+				if ($batas_hari == 0) {
 					$this->table->add_row(
-						['data' => 'Hari', 'colspan' => 7, 'style' => 'vertical-align:middle;text-align:center']
+						['data' => 'Hari', 'colspan' => 7, 'style' => 'vertical-align:middle;text-align:center;background:red']
 					);
+					$batas_hari++;
 				} elseif ($no != 1) {
 					$jam_mulai = $this->jam($jam_mulai,$waktu_istirahat);
 					$this->table->add_row(
@@ -109,14 +121,17 @@ class Jadwal extends MX_Controller {
 		}
 	}
 
-	function jam($time,$rentang)
+	function jam($time,$rentang, $operan = '')
 	{
 		$time      = strtotime(date('Y-m-d').' '.$time.':00');
 		$rentang   = strtotime(date('Y-m-d').' '.$rentang.':00');
 
 		$begin_day = strtotime(date('Y-m-d').' 00:00:00');
-
-		$hasil     = date('H:i', ($time + ($rentang - $begin_day)));
+		if ($operan == '') {
+			$hasil     = date('H:i', ($time + ($rentang - $begin_day)));
+		} elseif ($operan == '-') {
+			$hasil     = date('H:i', ($time - ($rentang - $begin_day)));
+		}
 
 		return $hasil;
 	}
