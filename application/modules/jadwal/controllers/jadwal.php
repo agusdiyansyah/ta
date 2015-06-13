@@ -49,6 +49,7 @@ class Jadwal extends MX_Controller {
 		$id = 'id_mhs';
 		$jam_selesai = '';
 		$jam_mulai = $awal;
+		$break = 0;
 		$pindah_hari = (($kondisi == ">") ? $batas_ujian : $this->jam($batas_ujian, $waktu_ujian, "-"));
 		foreach ($mahasiswa->result() as $rec) {
 			$no++;
@@ -56,14 +57,17 @@ class Jadwal extends MX_Controller {
 
 			// untuk menampilkan batas hari
 			if (strtotime($jam_mulai) >= strtotime($pindah_hari)) {
+				$break      = 0;
 				$jam_mulai  = $awal;
-				$this->table->add_row(
-					['data' => 'Hari', 'colspan' => 7, 'style' => 'vertical-align:middle;text-align:center;background:red']
-				);
 			}
 
 			// untuk menampilkan istirahat
-			if (($no-1) % $batas == 0) {
+			if (($no-1) % $batas == 0 && $break == 0) {
+				$this->table->add_row(
+					['data' => 'Hari', 'colspan' => 7, 'style' => 'vertical-align:middle;text-align:center;background:red']
+				);
+				$break = 1;
+			} elseif (($no-1) % $batas == 0) {
 				$jam_mulai = $this->jam($jam_mulai,$waktu_istirahat);
 				$this->table->add_row(
 					['data' => 'istirahat', 'colspan' => 7, 'style' => 'vertical-align:middle;text-align:center']
