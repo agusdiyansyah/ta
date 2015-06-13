@@ -9,7 +9,7 @@ class Jadwal extends MX_Controller {
 		$this->load->model('m_jadwal');
 	}
 
-	public function index($offset = 0)
+	public function index()
 	{
 		// included library
 			$this->load->library('table');	
@@ -32,7 +32,10 @@ class Jadwal extends MX_Controller {
 			$heading 			= [ 'No', 'Nama Mahasiswa', 'Pembimbing', 'Penguji', 'Judul', 'Waktu', 'Ruang' ];
 
 			// get data
-			$mahasiswa = $this->m_jadwal->getAll();
+			$mahasiswa 			= $this->m_jadwal->getAll();
+
+			// uncategories config :D
+			$no 				= 0;
 
 		// cari dosen penguji
 
