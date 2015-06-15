@@ -1,21 +1,13 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Statistic extends CI_Controller {
+class Statistic extends MX_Controller {
 
 	public function index()
 	{
-		?>
-		<legend>
-			<h1>Statistic :)):</h1>
-		</legend>
-		<p>
-			<div class="alert alert-warning">
-				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-				<i class="fa fa-warning"></i> This page is underconstruction
-			</div>
-		</p>
-		<?php
+		// $data['st_cat_lap'] = Modules::run("statistic/cat_lap");
+		// $data['st_cat_lap'] = $this->load->module('statistic/cat_lap');
+		$this->load->view('st_layout');
 	}
 
 }
