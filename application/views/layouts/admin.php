@@ -125,10 +125,13 @@
                         <a href="javascript:;" onclick="link('mahasiswa','Mahasiswa')"><i class="fa fa-graduation-cap"></i>&nbsp <span>Mahasiswa</span></a>
                     </li>
                     <li>
-                        <a href="javascript:;" onclick="link('dosen','Dosen')"><i class="fa fa-users"></i>&nbsp <span>Dosen</span></a>
+                        <a href="#" onclick="link('dosen','Dosen')"><i class="fa fa-users"></i>&nbsp <span>Dosen</span></a>
                     </li>
                     <li>
                         <a href="javascript:;" onclick="link('jadwal','Jadwal')"><i class="fa fa-calendar"></i>&nbsp <span>Jadwal</span></a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" onclick="link('bimbingan','Bimbingan')"><i class="fa fa-calendar"></i>&nbsp <span>Bimbingan</span></a>
                     </li>
                     <!-- <li>
                         <a href="javascript:;" data-toggle="collapse" data-target="#demo"><i class="fa fa-calendar"></i>&nbsp Jadwal <i class="fa fa-fw fa-caret-down"></i></a>
