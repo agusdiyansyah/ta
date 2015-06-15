@@ -1,8 +1,7 @@
 var expand = true;
 
 // default
-// $(".content").load('statistic');
-$(".content").load('jadwal');
+$(".content").load('bimbingan');
 
 function link (module, title) {
 	$.ajax({
