@@ -89,9 +89,9 @@ class Dosen extends MX_Controller {
 				'stat'     => true,
 				'id_dosen' => $row->id_dosen,
 				'nama'     => $row->nama,
-			);
+			));
 		} else {
-			echo json_encode(array('stat' => false);
+			echo json_encode(array('stat' => false));
 		}
 	}
 
