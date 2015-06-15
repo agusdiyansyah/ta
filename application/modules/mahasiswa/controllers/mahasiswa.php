@@ -26,7 +26,7 @@ class Mahasiswa extends MX_Controller {
 		$count = $this->m_mhs->getAll()->num_rows();
 		$total_page = ceil($count/$perpage);
 		$paging = '<ul class="pagination">';
-		$page = empty($this->input->post('page')) ? "1" : $this->input->post('page');
+		$page = ($this->input->post('page') == "") ? "1" : $this->input->post('page');
 		for ($i = 1; $i <= $total_page; $i++) { 
 			$akt = (($page == $i) ? $akt = 'class="active"' : "");
 
@@ -56,9 +56,9 @@ class Mahasiswa extends MX_Controller {
 							<a href="Javascript:;" onClick="hapus(' . $rec->id_mhs . ',' . (($page*$perpage)-$perpage) . ',' . $page . ')">hapus</a>
 						</div>';
 			$this->table->add_row(
-				["data" => $no, "style"=>"min-width:30px"],
-				["data" => $rec->m_nama . $action, "style"=>"min-width:180px"],
-				["data" => $rec->d_nama, "style"=>"min-width:180px"],
+				array("data" => $no, "style"=>"min-width:30px"),
+				array("data" => $rec->m_nama . $action, "style"=>"min-width:180px"),
+				array("data" => $rec->d_nama, "style"=>"min-width:180px"),
 				$rec->judul
 			);
 
@@ -96,15 +96,15 @@ class Mahasiswa extends MX_Controller {
 		$query = $this->m_mhs->getById($id);
 		if ($query->num_rows() > 0) {
 			$row = $query->row();
-			echo json_encode([
+			echo json_encode(array(
 				'stat'     => true,
 				'id_mhs'   => $row->id_mhs,
 				'nama'     => $row->nama,
 				'judul'    => $row->judul,
 				'id_dosen' => $row->id_dosen,
-			]);
+			));
 		} else {
-			echo json_encode(['stat' => false]);
+			echo json_encode(array('stat' => false));
 		}
 	}
 
@@ -137,7 +137,7 @@ class Mahasiswa extends MX_Controller {
 		if ($query->num_rows() > 0) {
 			$del = $this->m_mhs->delete($id);
 			if ($del) {
-				echo json_encode(['stat' => true]);
+				echo json_encode(array('stat' => true));
 			}
 		}
 	}

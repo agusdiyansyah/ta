@@ -5,7 +5,6 @@
 		font-weight: normal;
 
 	}
-
 	tr{
 		color: #34495E;
 	}

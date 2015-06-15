@@ -33,8 +33,8 @@ class Jadwal extends MX_Controller {
 			$batas            	= floor(($this->m_jadwal->query($sql)->num_rows()) / $jumlah_penguji);
 
 			// setingan table
-			$template_table		= [ 'table_open' => ' <table class="table table-bordered"> ' ];
-			$heading 			= [ 'No', 'Nama Mahasiswa', 'Pembimbing', 'Penguji', 'Judul', 'Waktu', 'Ruang' ];
+			$template_table		= array('table_open' => ' <table class="table table-bordered">');
+			$heading 			= array('No', 'Nama Mahasiswa', 'Pembimbing', 'Penguji', 'Judul', 'Waktu', 'Ruang');
 
 			// get data
 			$mahasiswa 			= $this->m_jadwal->getAll();
@@ -74,22 +74,22 @@ class Jadwal extends MX_Controller {
 
 			if (($no-1) % $batas == 0 && $break == 0) {
 				$this->table->add_row(
-					[
+					array(
 						'data' 		=> $tanggal_mulai, 
 						'colspan' 	=> 7, 
 						'style' 	=> 'vertical-align:middle;text-align:center;background:red'
-					]
+					)
 				);
 				$tanggal_mulai = date('Y-m-d', strtotime('+1 days', strtotime( $tanggal_mulai )));
 				$break = 1;
 			} elseif (($no-1) % $batas == 0) {
 				$jam_mulai = $this->jam($jam_mulai,$waktu_istirahat);
 				$this->table->add_row(
-					[
+					array(
 						'data' 		=> 'istirahat', 
 						'colspan' 	=> 7, 
 						'style' 	=> 'vertical-align:middle;text-align:center'
-					]
+					)
 				);
 				$r = 1;
 			} 
@@ -98,15 +98,15 @@ class Jadwal extends MX_Controller {
 			if (($no-1) % $batas == 0) {
 				$jam_selesai = $this->jam($jam_mulai,$waktu_ujian);
 				$this->table->add_row(
-					["data" => $no, "style"=>"min-width:30px"],
-					["data" => $rec->m_nama, "style"=>"min-width:200px"],
-					["data" => $rec->d_nama, "style"=>"min-width:200px"],
-					["data" => $rec->d_nama, "style"=>"min-width:200px"],
+					array("data" => $no, "style"=>"min-width:30px"),
+					array("data" => $rec->m_nama, "style"=>"min-width:200px"),
+					array("data" => $rec->d_nama, "style"=>"min-width:200px"),
+					array("data" => $rec->d_nama, "style"=>"min-width:200px"),
 					$rec->judul,
 					// rentang jam ujian/seminar
-					['data' => '<div style="width:100px">'. $jam_mulai .' - '. $jam_selesai .'</div>', 'rowspan' => $batas, 'class' => 'verticalText'],
+					array('data' => '<div style="width:100px">'. $jam_mulai .' - '. $jam_selesai .'</div>', 'rowspan' => $batas, 'class' => 'verticalText'),
 
-					['data' => 'R-'.$r, 'style' => 'text-align:center']
+					array('data' => 'R-'.$r, 'style' => 'text-align:center')
 				);	
 				$jam_mulai = $jam_selesai;
 				continue;
@@ -114,12 +114,12 @@ class Jadwal extends MX_Controller {
 
 			// isi table selanjutnya
 			$this->table->add_row(
-				["data" => $no, "style"=>"min-width:30px"],
-				["data" => $rec->m_nama, "style"=>"min-width:200px"],
-				["data" => $rec->d_nama, "style"=>"min-width:200px"],
-				["data" => $rec->d_nama, "style"=>"min-width:200px"],
+				array("data" => $no, "style"=>"min-width:30px"),
+				array("data" => $rec->m_nama, "style"=>"min-width:200px"),
+				array("data" => $rec->d_nama, "style"=>"min-width:200px"),
+				array("data" => $rec->d_nama, "style"=>"min-width:200px"),
 				$rec->judul,
-				['data' => 'R-'.$r, 'style' => 'text-align:center']
+				array('data' => 'R-'.$r, 'style' => 'text-align:center')
 			);	
 			
 		}
@@ -167,15 +167,15 @@ class Jadwal extends MX_Controller {
 		$query = $this->m_jadwal->getById($id);
 		if ($query->num_rows() > 0) {
 			$row = $query->row();
-			echo json_encode([
+			echo json_encode(array(
 				'stat'     => true,
 				'id_mhs'   => $row->id_mhs,
 				'nama'     => $row->nama,
 				'judul'    => $row->judul,
 				'id_dosen' => $row->id_dosen,
-			]);
+			));
 		} else {
-			echo json_encode(['stat' => false]);
+			echo json_encode(array('stat' => false));
 		}
 	}
 
@@ -197,7 +197,6 @@ class Jadwal extends MX_Controller {
 					'id_dosen' => $this->input->post('dosen'), 
 				);
 				$this->m_jadwal->update($data, $id);
-				echo "<script>alert('ahha')</script>";
 				$this->index();
 			}
 		}
@@ -209,7 +208,7 @@ class Jadwal extends MX_Controller {
 		if ($query->num_rows() > 0) {
 			$del = $this->m_jadwal->delete($id);
 			if ($del) {
-				echo json_encode(['stat' => true]);
+				echo json_encode(array('stat' => true));
 			}
 		}
 	}

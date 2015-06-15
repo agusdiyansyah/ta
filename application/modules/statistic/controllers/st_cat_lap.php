@@ -5,7 +5,8 @@ class St_cat_lap extends MX_Controller {
 
 	public function index()
 	{
-		$this->load->view('st_cat_lap');
+		echo "string";
+		// $this->load->view('st_cat_lap');
 	}
 
 }

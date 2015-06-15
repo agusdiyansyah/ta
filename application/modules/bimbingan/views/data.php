@@ -40,6 +40,9 @@
 		margin-top: 5px;
 		text-align: right;
 	}
+	.aksi{
+		float: right;
+	}
 </style>
 <div class="row">
 	<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
@@ -48,11 +51,13 @@
 				<h2 class="title-name">Agus Diyansyah</h2>
 				<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 group">
 					<!-- judul ta -->
-					<legend>Judul Tugas Akhir</legend>
+					<legend>Tugas Akhir</legend>
 					<blockquote>
 						<p>
+							<b>Judul</b> <br>
 							Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nam cursus. Morbi ut mi. Nullam enim leo, egestas id, condimentum at, laoreet mattis, massa.
 						</p>
+						<b>Pembimbing</b>
 						<footer>
 							Nama Pembimbing <span class="label label-default">offline</span>
 						</footer>						
@@ -61,11 +66,15 @@
 					<div class="panel-group" id="accordion">
 						<div class="panel panel-default">
 							<div class="panel-heading">
-							<h4 class="panel-title">
-								<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-								Collapsible Group Item #1
-								</a>
-							</h4>
+								<h4 class="panel-title">
+									<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+										Cover
+									</a>
+									<div class="aksi">
+										<a href=""><i class="fa fa-edit"></i><sup>3</sup></a>
+										<a href=""><i class="fa fa-info"></i></a>
+									</div>
+								</h4>
 							</div>
 							<div id="collapseOne" class="panel-collapse collapse">
 								<div class="panel-body">
@@ -75,11 +84,15 @@
 						</div>
 						<div class="panel panel-default">
 							<div class="panel-heading">
-							<h4 class="panel-title">
-								<a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
-								Collapsible Group Item #2
-								</a>
-							</h4>
+								<h4 class="panel-title">
+									<a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+										Pengesahan
+									</a>
+									<div class="aksi">
+										<a href=""><i class="fa fa-edit"></i><sup>3</sup></a>
+										<a href=""><i class="fa fa-info"></i></a>
+									</div>
+								</h4>
 							</div>
 							<div id="collapseTwo" class="panel-collapse collapse">
 								<div class="panel-body">
@@ -91,8 +104,12 @@
 							<div class="panel-heading">
 								<h4 class="panel-title">
 									<a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
-									Collapsible Group Item #3
+										Bab 1
 									</a>
+									<div class="aksi">
+										<a href=""><i class="fa fa-edit"></i><sup>3</sup></a>
+										<a href=""><i class="fa fa-info"></i></a>
+									</div>
 								</h4>
 							</div>
 							<div id="collapseThree" class="panel-collapse collapse">
@@ -167,6 +184,14 @@
 	</div>
 </div>
 <script>
+	$(".panel-title").hover(
+		function () {
+			$(this).find(".aksi").show();
+		},
+		function () {
+			$(this).find(".aksi").hide();
+		}
+	);
 	$(document).on('change', '.btn-file :file', function() {
 		var input 		= $(this),
 			numFiles 	= input.get(0).files ? input.get(0).files.length : 1,
