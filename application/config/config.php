@@ -14,7 +14,7 @@
 | path to your installation.
 |
 */
-$config['base_url'] = 'http' . ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 's' : '').'://'.$_SERVER['HTTP_HOST'] . '/kuliah/ajax/';
+$config['base_url'] = 'http' . ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 's' : '').'://'.$_SERVER['HTTP_HOST'] . '/kuliah/ta/';
 /*
 |--------------------------------------------------------------------------
 | Index File
@@ -244,7 +244,7 @@ $config['encryption_key'] = '1234567890SAut(@&$(&(@&HFKUSHKSDBSDK';
 | 'sess_time_to_update'		= how many seconds between CI refreshing Session Information
 |
 */
-$config['sess_cookie_name']		= 'L4ND4K';
+$config['sess_cookie_name']		= 'agus_ta';
 $config['sess_expiration']		= 1600;
 $config['sess_expire_on_close']	= TRUE;
 $config['sess_encrypt_cookie']	= FALSE;
