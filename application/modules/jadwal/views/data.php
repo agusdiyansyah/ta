@@ -76,6 +76,22 @@
 			display: none;
 		}
 	}
+	table{
+		overflow-wrap: break-word;
+		word-wrap: break-word;
+	}
+	td, th {
+	 	border: 1px solid #000 !important;
+		color: #000 !important
+	}
+	table caption{
+		text-align: center;
+		font-size: 14pt;
+		color: #000 !important
+	}
+	table caption hr{
+		border-bottom: 4px double #000;
+	}
 </style>
 
 <body class="cbp-spmenu-push">

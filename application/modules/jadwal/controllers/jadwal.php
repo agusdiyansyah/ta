@@ -7,6 +7,7 @@ class Jadwal extends MX_Controller {
 	{
 		parent::__construct();
 		$this->load->model('m_jadwal');
+		date_default_timezone_set('Asia/Jakarta');
 	}
 
 	public function index()
@@ -14,12 +15,16 @@ class Jadwal extends MX_Controller {
 		// included library
 			$this->load->library('table');	
 
-		// config
+		/**
+		CONFIG
+		*/
 			// select field
 			$sql 				= 'select id_dosen from dosen';
 
 			// setingan jadwal
+			$title_table		= "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nam cursus. Morbi ut mi. Nullam enim leo, egestas id, condimentum at, laoreet mattis, massa. <br><hr>";
 			$jumlah_penguji   	= 3;
+			$tanggal_mulai		= "2015-08-15";
 			$awal             	= "07:00";
 			$batas_ujian	  	= "11:00";
 			$kondisi          	= "<";
@@ -34,8 +39,9 @@ class Jadwal extends MX_Controller {
 			// get data
 			$mahasiswa 			= $this->m_jadwal->getAll();
 
-			// uncategories config :D
-			$no 				= 0;
+		/**
+		END OF CONFIG
+		*/
 
 		// cari dosen penguji
 
@@ -44,13 +50,18 @@ class Jadwal extends MX_Controller {
 		// apply setingan table
 		$this->table->set_template($template_table);
 		$this->table->set_heading($heading);
+		$this->table->set_caption($title_table);
 
-		$r = 0;
-		$id = 'id_mhs';
-		$jam_selesai = '';
-		$jam_mulai = $awal;
-		$break = 0;
-		$pindah_hari = (($kondisi == ">") ? $batas_ujian : $this->jam($batas_ujian, $waktu_ujian, "-"));
+		$id 			= 'id_mhs';
+		$jam_selesai 	= '';
+		$jam_mulai 		= $awal;
+		$r 				= 0;
+		$no 			= 0;
+		$break 			= 0;
+		$pindah_hari 	= (($kondisi == ">") 
+								? $batas_ujian 
+								: $this->jam($batas_ujian, $waktu_ujian, "-"));
+
 		foreach ($mahasiswa->result() as $rec) {
 			$no++;
 			$r++;
@@ -61,16 +72,24 @@ class Jadwal extends MX_Controller {
 				$jam_mulai  = $awal;
 			}
 
-			// untuk menampilkan istirahat
 			if (($no-1) % $batas == 0 && $break == 0) {
 				$this->table->add_row(
-					['data' => 'Hari', 'colspan' => 7, 'style' => 'vertical-align:middle;text-align:center;background:red']
+					[
+						'data' 		=> $tanggal_mulai, 
+						'colspan' 	=> 7, 
+						'style' 	=> 'vertical-align:middle;text-align:center;background:red'
+					]
 				);
+				$tanggal_mulai = date('Y-m-d', strtotime('+1 days', strtotime( $tanggal_mulai )));
 				$break = 1;
 			} elseif (($no-1) % $batas == 0) {
 				$jam_mulai = $this->jam($jam_mulai,$waktu_istirahat);
 				$this->table->add_row(
-					['data' => 'istirahat', 'colspan' => 7, 'style' => 'vertical-align:middle;text-align:center']
+					[
+						'data' 		=> 'istirahat', 
+						'colspan' 	=> 7, 
+						'style' 	=> 'vertical-align:middle;text-align:center'
+					]
 				);
 				$r = 1;
 			} 
