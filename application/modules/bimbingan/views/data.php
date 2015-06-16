@@ -24,11 +24,6 @@
 	.input-group{
 		margin-bottom: 15px;
 	}
-	.group{
-		background: #fff;
-		padding: 15px;
-		/*margin: 15px;*/
-	}
 	.title-name{
 		background: #fff;
 		color: #6CB6AE;
@@ -64,60 +59,34 @@
 					</blockquote>
 					<legend>Kategori Laporan</legend>
 					<div class="panel-group" id="accordion">
+						<?php  
+						if (!empty($cat)) {
+							foreach ($cat as $key) {
+								$json = json_decode($key->t_name);
+								?>
 						<div class="panel panel-default">
 							<div class="panel-heading">
 								<h4 class="panel-title">
-									<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-										Cover
-									</a>
 									<div class="aksi">
+										<a href=""><i class="fa fa-file-word-o"></i></i><sup>3</sup></a>
 										<a href=""><i class="fa fa-edit"></i><sup>3</sup></a>
 										<a href=""><i class="fa fa-info"></i></a>
 									</div>
-								</h4>
-							</div>
-							<div id="collapseOne" class="panel-collapse collapse">
-								<div class="panel-body">
-									Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-								</div>
-							</div>
-						</div>
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								<h4 class="panel-title">
-									<a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
-										Pengesahan
+									<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne<?php echo str_replace(" ", "-", "-".$json->title) ?>">
+										<?php echo $json->title ?>
 									</a>
-									<div class="aksi">
-										<a href=""><i class="fa fa-edit"></i><sup>3</sup></a>
-										<a href=""><i class="fa fa-info"></i></a>
-									</div>
 								</h4>
 							</div>
-							<div id="collapseTwo" class="panel-collapse collapse">
+							<div id="collapseOne<?php echo str_replace(" ", "-", "-".$json->title) ?>" class="panel-collapse collapse">
 								<div class="panel-body">
-									Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+									<?php echo $json->content ?>
 								</div>
 							</div>
 						</div>
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								<h4 class="panel-title">
-									<a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
-										Bab 1
-									</a>
-									<div class="aksi">
-										<a href=""><i class="fa fa-edit"></i><sup>3</sup></a>
-										<a href=""><i class="fa fa-info"></i></a>
-									</div>
-								</h4>
-							</div>
-							<div id="collapseThree" class="panel-collapse collapse">
-								<div class="panel-body">
-									Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-								</div>
-							</div>
-						</div>
+								<?php
+							}
+						}
+						?>
 					</div>
 				</div>
 			</div>
@@ -126,6 +95,15 @@
 				<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 group">
 					<legend>Upload File</legend>
 					<form>		
+						<div class="form-group">
+							<?php  
+							foreach ($cat as $key) {
+								$json = json_decode($key->t_name);
+								$opt[$key->TID] = $json->title;
+							}
+							echo form_dropdown('cat_opt', $opt, set_value(empty($default['cat']) ? '' : $dafault['cat']), 'class="form-control" required="required"');
+							?>
+						</div>
 				        <div class="input-group">
 							<span class="input-group-btn">
 								<button class="btn btn-default btn-file" type="button">
@@ -164,6 +142,14 @@
 			<br>
 			<div class="row">
 				<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 group">
+					<blockquote>
+						<b>Nama kategori laporan</b>
+						<span>
+							<footer>
+								Nama file
+							</footer>
+						</span>
+					</blockquote>
 					<div class="alert alert-success" role="alert">
 						<b>Pembimbing</b> <br>
 						<p>
@@ -184,7 +170,7 @@
 	</div>
 </div>
 <script>
-	$(".panel-title").hover(
+	$(".panel-default").hover(
 		function () {
 			$(this).find(".aksi").show();
 		},

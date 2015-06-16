@@ -5,8 +5,11 @@ class Bimbingan extends MX_Controller {
 
 	public function index()
 	{
-		$this->load->view('data');
+		$this->load->model('widget/cat_lap', 'lap');
+		$data['cat'] = $this->lap->get_cat()->result();
+		$this->load->view('data', $data);
 	}
+
 
 }
 
