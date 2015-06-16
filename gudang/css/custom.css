@@ -5,6 +5,19 @@
     -o-transition: all 0.3s ease-out;
     transition: all 0.3s ease-out;
 }
+.group{
+	background: #fff;
+	padding: 15px;
+	/*margin: 15px;*/
+}
+.panel-heading{
+	background: #fff !important
+}
+legend{
+	color: #1CAF9A;
+	padding-bottom: 10px;
+	margin-bottom: 20px;
+}
 .navbar{
 	background: #2B3643 !important;
 	min-height: 40px;
