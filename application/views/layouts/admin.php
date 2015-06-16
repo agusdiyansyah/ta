@@ -3,6 +3,18 @@
 <?php  
 	$this->load->view('meta/head');
 ?>
+<head>
+    <style type="text/css">
+        .modal img{
+            position: fixed;
+            top: 50%;
+            left: 50%;
+        }
+        .modal{
+            background: rgba(54,65,80,.5);
+        }
+    </style>
+</head>
 <body>
     <div id="wrapper" class="wrapper">
 
@@ -176,6 +188,15 @@
 
     </div>
     <!-- /#wrapper -->
+
+    <!-- modal -->
+
+        <!-- loading -->
+        <div  class="modal fade text-center" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <img src="<?php echo base_url() ?>gudang/svg/gears.svg">
+        </div>
+
+    <!-- end of modal -->
 
     <?php  
     $this->load->view('meta/js');
