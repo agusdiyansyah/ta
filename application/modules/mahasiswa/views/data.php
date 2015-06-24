@@ -5,7 +5,6 @@
 		font-size: 12pt;
 		color: #ECF0F1;
 		font-weight: normal;
-
 	}
 
 	tr{
@@ -22,12 +21,19 @@
 		text-decoration: none;
 	}
 	.cbp-spmenu{
-		color: #34495E;
-		background: #2B3643;
-		padding: 50px 15px;
+		z-index: 10000;
+		width: 225px;
+		background: #364150;
+		/*border-right: 5px solid #EFF1F3;*/
+	}
+	.form{
+		padding: 8px;
+	}
+	.sub-form{
+		margin-left: 7px;
 	}
 	.cbp-spmenu legend, .cbp-spmenu label{
-		color: #ECF0F1;
+		color: #8E9BAE;
 		font-weight: normal;
 	}
 	.btn-primary{
@@ -64,6 +70,12 @@
 		border-color: #ECF0F1 !important;	
 		border: none;
 	}
+	#title{
+		font-weight: bold;
+		padding: 9.5px 20px;
+		background: #2B3643;
+		color: #8E9BAE
+	}
 </style>
 
 <body class="cbp-spmenu-push">
@@ -88,30 +100,37 @@
 			</div>
 		</div>
 	</div>
-	<nav class="cbp-spmenu cbp-spmenu-vertical cbp-spmenu-right" id="cbp-spmenu-s2">
-		<form action="" role="form" class="form">
-			<legend>Data Mahasiswa</legend>
-			<input type="hidden" class="id" name="id">
-			<div class="form-group">
-				<label for="">Nama Mahasiswa</label>
-				<input name="nama" type="text" class="form-control nama" id="">
+	<nav class="cbp-spmenu cbp-spmenu-vertical cbp-spmenu-left" id="cbp-spmenu-s2">
+		<div id='title'>Data Mahasiswa</div>
+		<div class="form">
+			<form action="" role="form" class="form">
+				<input type="hidden" class="id" name="id">
+				<div class="form-group">
+					<label for="">NIM</label>
+					<input name="nim" type="text" class="form-control nim" id="">
+				</div>
+				<div class="form-group">
+					<label for="">Nama Mahasiswa</label>
+					<input name="nama" type="text" class="form-control nama" id="">
+				</div>
+				<div class="form-group">
+					<label for="">Dosen Pembimbing</label>
+					<?php  
+						echo form_dropdown('dosen', $opt, 'default', ' class="form-control dosen"');
+					?>
+				</div>
+				<div class="form-group">
+					<label for="">Judul Tugas Akhir</label>
+					<textarea name="judul" style="height:100px" class="form-control judul"></textarea>
+				</div>
+			</form>
+			<div class="sub-form">
+				<span id="btn-ac"></span>
+				<span id="btn-back">
+					<button class="btn btn-danger" id="back">Kembali</button>
+				</span>
 			</div>
-			<div class="form-group">
-				<label for="">Dosen Pembimbing</label>
-				<?php  
-					echo form_dropdown('dosen', $opt, 'default', ' class="form-control dosen"');
-				?>
-			</div>
-			<div class="form-group">
-				<label for="">Judul Tugas Akhir</label>
-				<textarea name="judul" style="height:100px" class="form-control judul"></textarea>
-			</div>
-		
-		</form>
-		<span id="btn-ac"></span>
-		<span id="btn-back">
-			<button class="btn btn-danger" id="back">Kembali</button>
-		</span>
+		</div>
 	</nav>
 </body>
 
@@ -120,22 +139,17 @@
 	var 
 		body 		= $("body"),
 		menuRight 	= document.getElementById( 'cbp-spmenu-s2' );
-
-	$("tr").hover(
-		function () {
-			$(this).find(".aksi").show();
-		},
-		function () {
-			$(this).find(".aksi").hide();
-		}
-	);
-
+	
 	// action target
 	$("#action").click(function() {
 		$("#cbp-spmenu-s2").toggleClass('cbp-spmenu-open');
-
-		$(".form").attr('action','mahasiswa/tambah_proses');
 		$("#btn-ac").html('<button onClick="proses()" class="add btn btn-primary">Simpan</button>');
+		$(".form").attr('action','mahasiswa/tambah_proses');
+		$(".id").val('');
+		$(".nim").val('');
+		$(".nama").val('');
+		$(".dosen").val('');
+		$(".judul").val('');
 	});
 
 	$("#back").click(function() {
@@ -191,6 +205,7 @@
 			success:function(json) {
 				if (json.stat) {
 					$(".id").val(json.id_mhs);
+					$(".nim").val(json.nim);
 					$(".nama").val(json.nama);
 					$(".dosen").val(json.id_dosen);
 					$(".judul").val(json.judul);

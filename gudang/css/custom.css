@@ -5,6 +5,9 @@
     -o-transition: all 0.3s ease-out;
     transition: all 0.3s ease-out;
 }
+
+
+
 .group{
 	background: #fff;
 	padding: 15px;
@@ -165,4 +168,9 @@ i{
 }
 .menu:hover, .menu:focus{
 	color: #1ABC9C
+}
+@media print{
+	.table{
+		width: 100%
+	}
 }

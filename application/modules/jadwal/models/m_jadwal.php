@@ -4,19 +4,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class M_jadwal extends CI_Model {
 
 	private $tbl = "mahasiswa";
-	function getAll($limit = array()){
+	function getAll(){
 		// $this->filter();
-		$this->db->select('id_mhs, mahasiswa.nama m_nama, dosen.nama d_nama, judul');
+
+		$this->db->select('id_mhs, nim, mahasiswa.nama m_nama, dosen.nama d_nama, judul');
 		$this->db->join('dosen', 'dosen.id_dosen = mahasiswa.id_dosen');
 		$this->db->order_by('id_mhs', 'desc');
-		if($limit == NULL){
-			return $this->db->get($this->tbl);
-		}
-		else {
-			$this->db->limit($limit['perpage'], $limit['offset']);
-			return $this->db->get($this->tbl);
-		}
+
+		return $this->db->get($this->tbl);
 	}
+
 
 	public function getDosen()
 	{

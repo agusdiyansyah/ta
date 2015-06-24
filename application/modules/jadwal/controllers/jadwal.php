@@ -61,7 +61,7 @@ class Jadwal extends MX_Controller {
 		$pindah_hari 	= (($kondisi == ">") 
 								? $batas_ujian 
 								: $this->jam($batas_ujian, $waktu_ujian, "-"));
-
+		
 		foreach ($mahasiswa->result() as $rec) {
 			$no++;
 			$r++;
@@ -99,12 +99,12 @@ class Jadwal extends MX_Controller {
 				$jam_selesai = $this->jam($jam_mulai,$waktu_ujian);
 				$this->table->add_row(
 					array("data" => $no, "style"=>"min-width:30px"),
-					array("data" => $rec->m_nama, "style"=>"min-width:200px"),
+					array("data" => ucwords(strtolower($rec->m_nama)), "style"=>"min-width:200px"),
 					array("data" => $rec->d_nama, "style"=>"min-width:200px"),
 					array("data" => $rec->d_nama, "style"=>"min-width:200px"),
-					$rec->judul,
+					array("data" => $rec->judul, "style"=>"min-width:300px"),
 					// rentang jam ujian/seminar
-					array('data' => '<div style="width:100px">'. $jam_mulai .' - '. $jam_selesai .'</div>', 'rowspan' => $batas, 'class' => 'verticalText'),
+					array('data' => '<div style="width:100px" class="verticalText">'. $jam_mulai .' - '. $jam_selesai .'</div>', 'rowspan' => $batas, 'style' => 'vertical-align:middle'),
 
 					array('data' => 'R-'.$r, 'style' => 'text-align:center')
 				);	
@@ -115,7 +115,7 @@ class Jadwal extends MX_Controller {
 			// isi table selanjutnya
 			$this->table->add_row(
 				array("data" => $no, "style"=>"min-width:30px"),
-				array("data" => $rec->m_nama, "style"=>"min-width:200px"),
+				array("data" => ucwords(strtolower($rec->m_nama)), "style"=>"min-width:200px"),
 				array("data" => $rec->d_nama, "style"=>"min-width:200px"),
 				array("data" => $rec->d_nama, "style"=>"min-width:200px"),
 				$rec->judul,

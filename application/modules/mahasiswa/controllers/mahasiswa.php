@@ -12,6 +12,7 @@ class Mahasiswa extends MX_Controller {
 	public function index($offset = 0)
 	{
 		$this->load->library('table');	
+		$this->load->model('dosen/m_dos');
 
 		$perpage     = 20;
 
@@ -20,7 +21,12 @@ class Mahasiswa extends MX_Controller {
 
 		//untuk konfigurasi pagination
 
-		$mahasiswa = $this->m_mhs->getAll(array('perpage' => $perpage, 'offset' => $offset));
+		$mahasiswa  = $this->m_mhs->getAll(array('perpage' => $perpage, 'offset' => $offset));
+		$data_dosen = $this->m_dos->getAll()->result();
+
+		foreach ($data_dosen as $key) {
+			$dosen[$key->id_dosen] = $key->nama;
+		}
 
 		// pagination
 		$count = $this->m_mhs->getAll()->num_rows();
@@ -57,9 +63,9 @@ class Mahasiswa extends MX_Controller {
 						</div>';
 			$this->table->add_row(
 				array("data" => $no, "style"=>"min-width:30px"),
-				array("data" => $rec->m_nama . $action, "style"=>"min-width:180px"),
-				array("data" => $rec->d_nama, "style"=>"min-width:180px"),
-				$rec->judul
+				array("data" => ucwords(strtolower($rec->m_nama)) . $action, "style"=>"min-width:190px"),
+				array("data" => ((!empty($dosen[$rec->id_dosen])) ? $dosen[$rec->id_dosen] : 'gx punya pembimbing :p'), "style"=>"min-width:190px"),
+				ucwords(strtolower($rec->judul))
 			);
 
 		}
@@ -75,6 +81,7 @@ class Mahasiswa extends MX_Controller {
 	public function tambah_proses()
 	{
 		$this->load->library('form_validation');
+		$this->form_validation->set_rules('nim', 'Nama Mahasiswa', 'trim|required|xss_clean');
 		$this->form_validation->set_rules('nama', 'Nama Mahasiswa', 'trim|required|xss_clean');
 		$this->form_validation->set_rules('dosen', 'Dosen Pembimbing', 'trim|required|xss_clean');
 		$this->form_validation->set_rules('judul', 'Judul Tugas Akhir', 'trim|required|xss_clean');
@@ -82,6 +89,7 @@ class Mahasiswa extends MX_Controller {
 			$this->index();
 		} else {
 			$data = array(
+				'nim' => $this->input->post('nim'), 
 				'nama' => $this->input->post('nama'), 
 				'judul' => $this->input->post('judul'), 
 				'id_dosen' => $this->input->post('dosen'), 
@@ -98,6 +106,7 @@ class Mahasiswa extends MX_Controller {
 			$row = $query->row();
 			echo json_encode(array(
 				'stat'     => true,
+				'nim'	   => $row->nim,
 				'id_mhs'   => $row->id_mhs,
 				'nama'     => $row->nama,
 				'judul'    => $row->judul,
@@ -114,6 +123,7 @@ class Mahasiswa extends MX_Controller {
 		$query = $this->m_mhs->getById($id);
 		if ($query->num_rows() > 0) {
 			$this->load->library('form_validation');
+			$this->form_validation->set_rules('nim', 'Nama Mahasiswa', 'trim|required|xss_clean');
 			$this->form_validation->set_rules('nama', 'Nama Mahasiswa', 'trim|required|xss_clean');
 			$this->form_validation->set_rules('dosen', 'Dosen Pembimbing', 'trim|required|xss_clean');
 			$this->form_validation->set_rules('judul', 'Judul Tugas Akhir', 'trim|required|xss_clean');
@@ -121,6 +131,7 @@ class Mahasiswa extends MX_Controller {
 				$this->index();
 			} else {
 				$data = array(
+					'nim' => $this->input->post('nim'), 
 					'nama' => $this->input->post('nama'), 
 					'judul' => $this->input->post('judul'), 
 					'id_dosen' => $this->input->post('dosen'), 

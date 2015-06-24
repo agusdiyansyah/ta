@@ -29,14 +29,14 @@
 		color: #6CB6AE;
 		padding: 15px;
 	}
-	.alert .ket{
-		border-top: 1px solid silver;
-		padding-top: 5px;
-		margin-top: 5px;
-		text-align: right;
+	.ket{
+		font-size: 8pt;
 	}
 	.aksi{
 		float: right;
+	}
+	.scroll{
+		padding-right: 15px;
 	}
 </style>
 <div class="row">
@@ -150,19 +150,27 @@
 							</footer>
 						</span>
 					</blockquote>
-					<div class="alert alert-success" role="alert">
-						<b>Pembimbing</b> <br>
-						<p>
-							Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nam cursus. Morbi ut mi. Nullam enim leo, egestas id, condimentum at, laoreet mattis, massa.
-						</p>
-						<div class="ket">15/08/2015 <b>07:00</b></div>
-					</div>
-					<div class="alert text-right">
-						<b>You</b> <br>
-						<p>
-							Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nam cursus. Morbi ut mi. Nullam enim leo, egestas id, condimentum at, laoreet mattis, massa.
-						</p>
-						<div class="ket">15/08/2015 <b>07:00</b></div>
+					<div class="scroll">
+						<?php  
+						for ($i=0; $i < 5; $i++) { 
+							?>
+						<div class="alert alert-success" role="alert">
+							<b>Pembimbing</b> <small class="ket"> at 15/08/2015 07:00</small>
+							<br>
+							<p>
+								Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nam cursus. Morbi ut mi. Nullam enim leo, egestas id, condimentum at, laoreet mattis, massa.
+							</p>
+						</div>
+						<div class="alert text-right">
+							<b>You</b> <small class="ket"> at 15/08/2015 07:00</small>
+							<br>
+							<p>
+								Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nam cursus. Morbi ut mi. Nullam enim leo, egestas id, condimentum at, laoreet mattis, massa.
+							</p>
+						</div>
+							<?php
+						}
+						?>
 					</div>
 				</div>
 			</div>
@@ -178,6 +186,19 @@
 			$(this).find(".aksi").hide();
 		}
 	);
+
+	$(".scroll").slimScroll({
+	    position        : 'right',
+	    height          : '478px',
+	    color			: '#ECF0F1',
+	    railVisible     : false,
+	    alwaysVisible   : true,
+	    disableFadeOut  : true,
+	    wheelStep       : 50
+	});
+
+
+	// this for upload file
 	$(document).on('change', '.btn-file :file', function() {
 		var input 		= $(this),
 			numFiles 	= input.get(0).files ? input.get(0).files.length : 1,

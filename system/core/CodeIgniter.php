@@ -27,6 +27,7 @@
  * @link		http://codeigniter.com/user_guide/
  */
 
+
 /*
  * ------------------------------------------------------
  *  Define the CodeIgniter Version

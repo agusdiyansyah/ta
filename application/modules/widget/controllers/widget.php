@@ -21,6 +21,14 @@ class Widget extends MX_Controller {
 	}
 
 /**
+USER OVERVIEW
+*/
+	public function FunctionName($value='')
+	{
+		# code...
+	}
+
+/**
 KATEGORI LAPORAN
 */
 	// get data

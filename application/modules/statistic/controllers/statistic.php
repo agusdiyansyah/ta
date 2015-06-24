@@ -5,8 +5,8 @@ class Statistic extends MX_Controller {
 
 	public function index()
 	{
-		$data['st_cat_lap'] = Modules::run("widget/cat_lap");
-		$this->load->view('st_layout', $data);
+		// $data['st_cat_lap'] = Modules::run("widget/cat_lap");
+		$this->load->view('st_layout');
 	}
 
 }

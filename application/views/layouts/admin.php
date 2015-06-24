@@ -30,7 +30,7 @@
                 </button>
                 <span class="navbar-brand">
                     <a href="javascript:;" class="menu"><i class="fa fa-list"></i></a>
-                    <span style="color:#fff">Bimb</span><span style="color:red">OL</span></span>
+                    <span style="color:#fff">Bimb</span><span style="color:red;font-weight:bold">OL</span></span>
             </div>
             <!-- Top Menu Items -->
             <ul class="nav navbar-right top-nav">
@@ -140,7 +140,7 @@
                         <a href="#" onclick="link('dosen','Dosen')"><i class="fa fa-users"></i>&nbsp <span>Dosen</span></a>
                     </li>
                     <li>
-                        <a href="javascript:;" onclick="link('jadwal','Jadwal')"><i class="fa fa-calendar"></i>&nbsp <span>Jadwal</span></a>
+                        <a href="javascript:;" onclick="link('jadwal','Jadwal') "><i class="fa fa-calendar"></i>&nbsp <span>Jadwal</span></a>
                     </li>
                     <li>
                         <a href="javascript:;" onclick="link('bimbingan','Bimbingan')"><i class="fa fa-calendar"></i>&nbsp <span>Bimbingan</span></a>
@@ -160,18 +160,18 @@
             </div>
             <!-- /.navbar-collapse -->
         </nav>
-
         <div id="page-wrapper">
 
             <div class="container-fluid">
 
 				<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 					<!-- Page Heading -->
-
 	                <br>
 
 	                <div class="content">
-						
+						<?php  
+                           // echo Modules::run("statistic");
+                        ?>
 	                </div>
 
 	                <br>
@@ -197,11 +197,6 @@
         </div>
 
     <!-- end of modal -->
-
-    <?php  
-    $this->load->view('meta/js');
-    ?>
-
 </body>
 
 </html>

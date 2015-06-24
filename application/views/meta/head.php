@@ -19,4 +19,17 @@
 
     <link href="<?php echo base_url().'gudang/' ?>css/custom.css" rel="stylesheet">
 
+    <!-- jQuery -->
+    <script src="<?php echo base_url().'gudang/' ?>js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="<?php echo base_url().'gudang/' ?>js/bootstrap.min.js"></script>
+
+    <!-- Additional -->
+    <script src="<?php echo base_url() ?>gudang/js/plugins/jquery.slimscroll.js"></script>
+    <script src="<?php echo base_url() ?>gudang/js/jquery.PrintArea.js"></script>
+    <script src="<?php echo base_url() ?>gudang/js/plugins/chart.js"></script>
+
+    <script src="<?php echo base_url().'gudang/' ?>js/libs/custom.js"></script>
+
 </head>

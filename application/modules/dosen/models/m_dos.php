@@ -33,14 +33,17 @@ class M_dos extends CI_Model {
 	public function delete($id)
 	{
 		$this->db->where('id_dosen', $id);
-		$this->db->delete('dosen');
+		$dos = $this->db->delete('dosen');
+		if ( $dos ) {
+			
+		}
 		return $this;
 	}
 
 	public function insert($object)
 	{
 		$this->db->insert('dosen', $object);
-		return $this;
+		return $this->db->insert_id();
 	}
 
 }

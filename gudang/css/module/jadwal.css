@@ -1,0 +1,94 @@
+	.wait{
+		font-size: 12pt;
+		color: #ECF0F1;
+		font-weight: normal;
+
+	}
+	tr{
+		color: #34495E;
+	}
+	a{
+		color: #3498DB;
+	}
+	.cbp-spmenu{
+		color: #34495E;
+		background: #2B3643;
+		padding: 50px 15px;
+	}
+	.cbp-spmenu legend, .cbp-spmenu label{
+		color: #ECF0F1;
+		font-weight: normal;
+	}
+	.btn-primary{
+		border-radius: 0px;
+		background: #3498DB;
+	}
+	.btn-danger{
+		border-radius: 0px;
+		background: #E74C3C;
+	}
+	.panel-heading{
+		padding: 0;
+		border-radius: 0px;
+		height: 37px;
+		background: #F7F9FA !important;
+	}
+	.panel-heading a{
+		float: left;
+		background: #95A5A6;
+		color: #fff;
+		padding: 8px;
+		text-decoration: none;
+	}
+	.panel-heading div{
+		float: right;
+	}
+	.panel-heading div a:hover{
+		background: #7F8C8D;
+		color: #fff
+	}
+	.panel{
+		border-radius: 0px;
+		border: none;
+		border-color: #ECF0F1 !important;
+	}
+	.panel-default>.panel-heading{
+		border-color: #ECF0F1 !important;	
+		border: none;
+	}
+	.verticalText {
+		-webkit-transform: rotate(-90deg);
+		   -moz-transform: rotate(-90deg);
+		    -ms-transform: rotate(-90deg);
+		     -o-transform: rotate(-90deg);
+		        transform: rotate(-90deg);
+		vertical-align: inherit !important;
+	}
+
+	table{
+		overflow-wrap: break-word;
+		word-wrap: break-word;
+	}
+	td, th {
+	 	border: 1px solid #000 !important;
+		color: #000 !important
+	}
+	table caption{
+		text-align: center;
+		font-size: 14pt;
+		color: #000 !important
+	}
+	table caption hr{
+		border-bottom: 4px double #000;
+	}
+	@media print{
+		#cbp-spmenu-s2{
+			display: none;
+		}
+		.panel-heading{
+			display: none;
+		}
+		tr{
+			border-color: #000 !important
+		}
+	}

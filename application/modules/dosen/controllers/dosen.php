@@ -51,7 +51,7 @@ class Dosen extends MX_Controller {
 
 		foreach ($mahasiswa->result() as $rec) {
 			$no++;
-			$action = '<div class="aksi" id="aksi">
+			$action =  '<div class="aksi" id="aksi">
 							<a href="Javascript:;" class="edit" onClick="edit(' . $rec->$id . ')">edit</a>&nbsp
 							<a href="Javascript:;" onClick="hapus(' . $rec->$id . ',' . (($page*$perpage)-$perpage) . ',' . $page . ')">hapus</a>
 						</div>';
@@ -68,14 +68,35 @@ class Dosen extends MX_Controller {
 	public function tambah_proses()
 	{
 		$this->load->library('form_validation');
+		$this->form_validation->set_rules('nip', 'Nip Dosen', 'trim|required|xss_clean');
 		$this->form_validation->set_rules('nama', 'Nama Dosen', 'trim|required|xss_clean');
+
+		$nip  = str_replace(" ", "", $this->input->post('nip'));
+		$nama = $this->input->post('nama');
+		$ecp  = md5($nama);
+		$ecp  = str_split($ecp, 5);
+		$pw   = $ecp[0];
+		unset($ecp);
+
+
 		if ($this->form_validation->run() == false) {
 			$this->index();
 		} else {
 			$data = array(
+				'nip' => $this->input->post('nip'), 
 				'nama' => $this->input->post('nama'), 
 			);
-			$this->m_dos->insert($data);
+			$id = $this->m_dos->insert($data);
+
+			$user = array(
+				'rel_id' 		=> $id,
+				'u_name' 		=> $nip, 
+				'u_pass' 		=> $pw,
+				'u_nicename' 	=> $this->input->post('nama'),
+				'u_level' 		=> '2'
+			);
+			$this->load->model('user/m_user');
+			$this->m_user->insert($user);
 			$this->index();
 		}
 	}
@@ -87,6 +108,7 @@ class Dosen extends MX_Controller {
 			$row = $query->row();
 			echo json_encode(array(
 				'stat'     => true,
+				'nip' 	   => $row->nip,
 				'id_dosen' => $row->id_dosen,
 				'nama'     => $row->nama,
 			));
@@ -101,11 +123,13 @@ class Dosen extends MX_Controller {
 		$query = $this->m_dos->getById($id);
 		if ($query->num_rows() > 0) {
 			$this->load->library('form_validation');
+			$this->form_validation->set_rules('nip', 'Nip Dosen', 'trim|required|xss_clean');
 			$this->form_validation->set_rules('nama', 'Nama Dosen', 'trim|required|xss_clean');
 			if ($this->form_validation->run() == false) {
 				$this->index();
 			} else {
 				$data = array(
+					'nip' => $this->input->post('nip'), 
 					'nama' => $this->input->post('nama'), 
 				);
 				$this->m_dos->update($data, $id);
