@@ -130,20 +130,20 @@
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul class="nav navbar-nav side-nav">
-                    <li>
-                        <a href="javascript:;" onclick="link('statistic','Dashboard')"><i class="fa fa-dashboard"></i>&nbsp <span>Dashboard</span></a>
+                    <li data-module="statistic" data-title="Dashboard" class="link">
+                        <a href="javascript:;"><i class="fa fa-dashboard"></i>&nbsp <span>Dashboard</span></a>
                     </li>
-                    <li>
-                        <a href="javascript:;" onclick="link('mahasiswa','Mahasiswa')"><i class="fa fa-graduation-cap"></i>&nbsp <span>Mahasiswa</span></a>
+                    <li data-module="mahasiswa" data-title="Mahasiswa" class="link">
+                        <a href="javascript:;" ><i class="fa fa-graduation-cap"></i>&nbsp <span>Mahasiswa</span></a>
                     </li>
-                    <li>
-                        <a href="#" onclick="link('dosen','Dosen')"><i class="fa fa-users"></i>&nbsp <span>Dosen</span></a>
+                    <li  data-module="dosen" data-title="Dosen" class="link">
+                        <a href="javascript:;"><i class="fa fa-users"></i>&nbsp <span>Dosen</span></a>
                     </li>
-                    <li>
-                        <a href="javascript:;" onclick="link('jadwal','Jadwal') "><i class="fa fa-calendar"></i>&nbsp <span>Jadwal</span></a>
+                    <li  data-module="jadwal" data-title="Jadwal" class="link">
+                        <a href="javascript:;"><i class="fa fa-calendar"></i>&nbsp <span>Jadwal</span></a>
                     </li>
-                    <li>
-                        <a href="javascript:;" onclick="link('bimbingan','Bimbingan')"><i class="fa fa-calendar"></i>&nbsp <span>Bimbingan</span></a>
+                    <li data-module="bimbingan" data-title="Bimbingan" class="link">
+                        <a href="javascript:;"><i class="fa fa-calendar"></i>&nbsp <span>Bimbingan</span></a>
                     </li>
                     <!-- <li>
                         <a href="javascript:;" data-toggle="collapse" data-target="#demo"><i class="fa fa-calendar"></i>&nbsp Jadwal <i class="fa fa-fw fa-caret-down"></i></a>
@@ -198,5 +198,34 @@
 
     <!-- end of modal -->
 </body>
+<script>
+    $(".link").click(function() {
+        var module = $(this).data('module'), title = $(this).data('title');
+        
+        $(".link").removeClass('active');
+        $(this).addClass('active');
 
+        $.ajax({
+            url: module,
+            cache: false,
+            dataType: 'html',
+            success: function(html) {
+                
+
+                $("#wrapper").css('padding-left', '225px');
+                $(".side-nav").css('width', '225px');
+                $(".side-nav span").css('display', 'inline-block');
+                if (module == 'jadwal') {
+                    small();
+                };
+                $(".content").html(html).async;
+                $(".title").html(title).async;
+            }
+        })
+        .fail(function() {
+            alert( "error" );
+            console.log("error");
+        });
+    });
+</script>
 </html>
