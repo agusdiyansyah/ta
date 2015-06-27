@@ -6,7 +6,12 @@
     transition: all 0.3s ease-out;
 }
 
-
+.navbar-inverse .navbar-nav>.active>a, 
+.navbar-inverse .navbar-nav>.active>a:hover, 
+.navbar-inverse .navbar-nav>.active>a:focus {
+  color: #fff;
+  background-color: #19C8AF !important;
+}
 
 .group{
 	background: #fff;
