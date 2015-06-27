@@ -42,28 +42,6 @@ $(document).ajaxComplete(function(evt, jqXHR, settings){
 
 });
 
-function link (module, title) {
-	$.ajax({
-		url: module,
-		cache: false,
-		dataType: 'html',
-		success: function(html) {
-			$("#wrapper").css('padding-left', '225px');
-			$(".side-nav").css('width', '225px');
-			$(".side-nav span").css('display', 'inline-block');
-			if (module == 'jadwal') {
-				small();
-			};
-			$(".content").html(html).async;
-			$(".title").html(title).async;
-		}
-	})
-	.fail(function() {
-		alert( "error" );
-		console.log("error");
-	});
-};
-
 
 function small () {
 	$("#wrapper").css('padding-left', '50px');
