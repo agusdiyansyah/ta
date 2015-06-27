@@ -56,6 +56,26 @@ class Mahasiswa extends MX_Controller {
 		$id = 'id_mhs';
 
 		foreach ($mahasiswa->result() as $rec) {
+			/**
+			untuk daftar user
+			*/
+			// $nama = $rec->m_nama;
+			// $ecp  = md5($nama);
+			// $ecp  = str_split($ecp, 5);
+			// $pw   = $ecp[0];
+			// unset($ecp);
+
+			// $user = array(
+			// 	'rel_id' 		=> $rec->id_mhs,
+			// 	'u_name' 		=> $rec->nim, 
+			// 	'u_pass' 		=> $pw,
+			// 	'u_nicename' 	=> $nama,
+			// 	'u_level' 		=> '3'
+			// );
+			// $this->load->model('user/m_user');
+			// $this->m_user->insert($user);
+
+
 			$no++;
 			$action = '<div class="aksi" id="aksi">
 							<a href="Javascript:;" class="edit" onClick="edit(' . $rec->id_mhs . ')">edit</a>&nbsp
