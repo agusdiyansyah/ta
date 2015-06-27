@@ -61,70 +61,146 @@ class Jadwal extends MX_Controller {
 		$pindah_hari 	= (($kondisi == ">") 
 								? $batas_ujian 
 								: $this->jam($batas_ujian, $waktu_ujian, "-"));
-		
-		foreach ($mahasiswa->result() as $rec) {
-			$no++;
-			$r++;
 
-			// untuk menampilkan batas hari
-			if (strtotime($jam_mulai) >= strtotime($pindah_hari)) {
-				$break      = 0;
-				$jam_mulai  = $awal;
-			}
-
-			if (($no-1) % $batas == 0 && $break == 0) {
-				$this->table->add_row(
-					array(
-						'data' 		=> $tanggal_mulai, 
-						'colspan' 	=> 7, 
-						'style' 	=> 'vertical-align:middle;text-align:center;background:red'
-					)
-				);
-				$tanggal_mulai = date('Y-m-d', strtotime('+1 days', strtotime( $tanggal_mulai )));
-				$break = 1;
-			} elseif (($no-1) % $batas == 0) {
-				$jam_mulai = $this->jam($jam_mulai,$waktu_istirahat);
-				$this->table->add_row(
-					array(
-						'data' 		=> 'istirahat', 
-						'colspan' 	=> 7, 
-						'style' 	=> 'vertical-align:middle;text-align:center'
-					)
-				);
-				$r = 1;
-			} 
-
-			// isi table (baris pertama setelah istirahat/hari)
-			if (($no-1) % $batas == 0) {
-				$jam_selesai = $this->jam($jam_mulai,$waktu_ujian);
-				$this->table->add_row(
-					array("data" => $no, "style"=>"min-width:30px"),
-					array("data" => ucwords(strtolower($rec->m_nama)), "style"=>"min-width:200px"),
-					array("data" => $rec->d_nama, "style"=>"min-width:200px"),
-					array("data" => $rec->d_nama, "style"=>"min-width:200px"),
-					array("data" => $rec->judul, "style"=>"min-width:300px"),
-					// rentang jam ujian/seminar
-					array('data' => '<div style="width:100px" class="verticalText">'. $jam_mulai .' - '. $jam_selesai .'</div>', 'rowspan' => $batas, 'style' => 'vertical-align:middle'),
-
-					array('data' => 'R-'.$r, 'style' => 'text-align:center')
-				);	
-				$jam_mulai = $jam_selesai;
-				continue;
-			}
-
-			// isi table selanjutnya
-			$this->table->add_row(
-				array("data" => $no, "style"=>"min-width:30px"),
-				array("data" => ucwords(strtolower($rec->m_nama)), "style"=>"min-width:200px"),
-				array("data" => $rec->d_nama, "style"=>"min-width:200px"),
-				array("data" => $rec->d_nama, "style"=>"min-width:200px"),
-				$rec->judul,
-				array('data' => 'R-'.$r, 'style' => 'text-align:center')
-			);	
-			
+		/**
+		CARI PENGUJI LOK 
+		PENING PALAK DIBUAT NYE
+		*/
+		$res = $mahasiswa->result();
+		$this->load->model('dosen/m_dos');
+		$query = $this->m_dos->getAll();
+		$a = 1;
+		// buat array dosen
+		foreach ($query->result() as $key) {
+			$dos[$key->id_dosen] = $key->nama;
 		}
-		
-		$data['table']       = $this->table->generate();
+		$urut = 0;
+		$a = 0;
+		$uji = array();
+		$data_dosen = $dos;
+		foreach ($res as $rec) {
+			$a++;
+			unset($data_dosen[$rec->id_dosen]);
+			if ($a == $batas) {
+				$a = 0;
+				$uji[$urut] = array();
+				foreach ($data_dosen as $key => $value) {
+					array_push($uji[$urut], $value);
+				}
+				$urut++;
+				$data_dosen = $dos;
+			}
+		}
+
+		$dos = array();
+		$mhs = array();
+		$table = "<table class='table table-bordered'>
+					<thead>
+						<tr>
+							<th style='width:50px'>No</th>
+							<th style='width:200px'>Nama Mahasiswa</th>
+							<th style='width:200px'>Pembimbing</th>
+							<th style='width:200px'>Penguji</th>
+							<th style='width:300px'>Judul</th>
+							<th style='width:100px'>Waktu</th>
+							<th style='width:50px'>Ruang</th>
+						</tr>
+					</thead>";
+		$no = 0;
+		$hari = 1;
+		$batas_ujian = (($kondisi == '<') ? $this->jam($batas_ujian, $waktu_ujian, '-') : $batas_ujian);
+		$u = 0;
+		$acak = 1;
+		while ((count($mhs)) != (count($res))) {
+			$a = 0;
+			$b = 0;
+			if ($acak = 1) {
+				shuffle($uji[$u]);
+			}
+			$table .= "<tbody>";
+			$jam_selesai = $this->jam($jam_mulai, $waktu_ujian);
+			foreach ($res as $rec) {
+				$a++;
+				if (!in_array($rec->id_dosen, $dos) && !in_array($rec->id_mhs, $mhs)) {
+					$no++;
+					array_push($mhs, $rec->id_mhs);
+					array_push($dos, $rec->id_dosen);
+					if ($a == 1) {
+						if ($hari == 1) {
+							$table .= "
+								<tr class='alert-success text-center'>
+									<td colspan='7'>$tanggal_mulai</td>
+								</tr>
+							";
+							$hari--;
+						} else {
+							$table .= "
+								<tr>
+									<td colspan='7' class='text-center'>istirahat</td>
+								</tr>
+							";
+						}
+						$table .= "
+								<tr>
+									<td rowspan='2'>$no</td>
+									<td rowspan='2'>" . ucwords(strtolower($rec->m_nama)) . "</td>
+									<td rowspan='2'>" . $rec->d_nama . "</td>
+									<td>" . ((array_key_exists($b, $uji[$u])) ? $uji[$u][$b] : 'gx ada pengujinya') . "</td>
+									<td rowspan='2'>" . $rec->judul . "</td>
+									<td style='vertical-align:middle' rowspan='". $batas*2 ."'> 
+										<div class='verticalText'>
+											" . $jam_mulai . "-" . $jam_selesai . "
+										</div> 
+									</td>
+									<td rowspan='2' class='text-center'> R-" . $a . " </td>
+								</tr>
+						";
+						$b++;
+						$table .= "<tr>
+									<td>" . ((array_key_exists($b, $uji[$u])) ? $uji[$u][$b] : 'gx ada pengujinya') . "</td>
+								</tr>";
+						$b++;
+						continue;
+					} else {
+						$table .= "
+								<tr>
+									<td rowspan='2'>$no</td>
+									<td rowspan='2'>" . ucwords(strtolower($rec->m_nama)) . "</td>
+									<td rowspan='2'>" . $rec->d_nama . "</td>
+									<td>" . ((array_key_exists($b, $uji[$u])) ? $uji[$u][$b] : 'gx ada pengujinya') . "</td>
+									<td rowspan='2'>" . $rec->judul . "</td>
+									<td rowspan='2' class='text-center'> R-" . $a . " </td>
+								</tr>
+						";
+						$b++;
+						$table .= "<tr>
+									<td>" . ((array_key_exists($b, $uji[$u])) ? $uji[$u][$b] : 'gx ada pengujinya') . "</td>
+								</tr>";
+						$b++;
+					}
+
+				} else {
+					$a--;
+					continue;
+				}
+
+				if ($a == $batas) {
+					unset($dos);
+					$dos = array();
+					break;
+				}
+			}
+			$jam_mulai = $jam_selesai;
+			$jam_mulai = $this->jam($jam_mulai, $waktu_istirahat);
+			if (strtotime($jam_mulai) >= strtotime($batas_ujian)) {
+				$hari = 1;
+				$jam_mulai = $awal;
+			}
+			$table .= "</tbody>";
+			$urut++;
+		}
+		$table .= "</table>";
+		$data['table']       = /*$this->table->generate();*/ $table;
 		$this->load->view('data', $data);
 	}
 
