@@ -1,7 +1,11 @@
 <link rel="stylesheet" type="text/css" href="<?php echo base_url() ?>gudang/css/plugins/default.css" />
 <link rel="stylesheet" type="text/css" href="<?php echo base_url() ?>gudang/css/plugins/component.css" />
 <link rel="stylesheet" type="text/css" href="<?php echo base_url() ?>gudang/css/module/jadwal.css" />
-
+<style type="text/css">
+	tr{
+		height: 40px !important;
+	}
+</style>
 <body class="cbp-spmenu-push" onload="expand()">
 	<br>
 	<br>
