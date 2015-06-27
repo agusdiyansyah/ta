@@ -114,7 +114,25 @@ class Mahasiswa extends MX_Controller {
 				'judul' => $this->input->post('judul'), 
 				'id_dosen' => $this->input->post('dosen'), 
 			);
-			$this->m_mhs->insert($data);
+
+			$nip  = str_replace(" ", "", $this->input->post('nim'));
+			$nama = $this->input->post('nama');
+			$ecp  = md5($nama);
+			$ecp  = str_split($ecp, 5);
+			$pw   = $ecp[0];
+			unset($ecp);
+
+			$id = $this->m_mhs->insert($data);
+			$user = array(
+				'rel_id' 		=> $id,
+				'u_name' 		=> $nip, 
+				'u_pass' 		=> $pw,
+				'u_nicename' 	=> $this->input->post('nama'),
+				'u_level' 		=> '3'
+			);
+			$this->load->model('user/m_user');
+			$this->m_user->insert($user);
+
 			$this->index();
 		}
 	}
