@@ -35,7 +35,17 @@ class M_dos extends CI_Model {
 		$this->db->where('id_dosen', $id);
 		$dos = $this->db->delete('dosen');
 		if ( $dos ) {
-			
+			$this->db->select('uid');
+			$this->db->where('rel_id', $id);
+			$this->db->where('u_level', '2');
+			$user = $this->db->get('user')->row();
+
+			$this->db->where('rel_id', $id);
+			$this->db->where('u_level', '2');
+			$this->db->delete('user');
+
+			$this->db->where('id', $user->uid);
+			$this->db->delete('meta');
 		}
 		return $this;
 	}
