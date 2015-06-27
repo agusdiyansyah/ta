@@ -20,7 +20,7 @@ class Dosen extends MX_Controller {
 
 		//untuk konfigurasi pagination
 
-		$mahasiswa = $this->m_dos->getAll(array('perpage' => $perpage, 'offset' => $offset));
+		$dosen = $this->m_dos->getAll(array('perpage' => $perpage, 'offset' => $offset));
 
 		// pagination
 		$count = $this->m_dos->getAll()->num_rows();
@@ -41,7 +41,7 @@ class Dosen extends MX_Controller {
 			'table_open' => '<table class="table table-hover">',
 		);
 		$heading = array(
-			'No', 'Nama Dosen'
+			'No', 'Nama Dosen', array('data' => '<i class="fa fa-users"></i>', 'class'=>'text-center')
 		);
 
 		$this->table->set_template($template_table);
@@ -49,7 +49,18 @@ class Dosen extends MX_Controller {
 
 		$id = 'id_dosen';
 
-		foreach ($mahasiswa->result() as $rec) {
+		/**
+		JUMLAH MAHASISWA BIMBINGAN TIAP DOSEN
+		*/
+		$this->load->model('mahasiswa/m_mhs');
+		$query = $this->m_mhs->getAll();
+		
+		foreach ($query->result() as $res) {
+			$arr = ((empty($sum[$res->id_dosen])) ? [] : $sum[$res->id_dosen]);
+			$sum[$res->id_dosen] = array_merge(array($res->id_dosen), $arr);
+		}
+
+		foreach ($dosen->result() as $rec) {
 			$no++;
 			$action =  '<div class="aksi" id="aksi">
 							<a href="Javascript:;" class="edit" onClick="edit(' . $rec->$id . ')">edit</a>&nbsp
@@ -57,7 +68,8 @@ class Dosen extends MX_Controller {
 						</div>';
 			$this->table->add_row(
 				array("data" => $no, "style"=>"min-width:30px"),
-				array("data" => $rec->nama . $action, "style"=>"min-width:500px")
+				array("data" => $rec->nama . $action, "style"=>"min-width:500px"),
+				array("data" => ((empty($sum[$rec->id_dosen])) ? 0 : count($sum[$rec->$id])), "style"=>"min-width:50px;text-align:center")
 			);
 
 		}
@@ -71,17 +83,16 @@ class Dosen extends MX_Controller {
 		$this->form_validation->set_rules('nip', 'Nip Dosen', 'trim|required|xss_clean');
 		$this->form_validation->set_rules('nama', 'Nama Dosen', 'trim|required|xss_clean');
 
-		$nip  = str_replace(" ", "", $this->input->post('nip'));
-		$nama = $this->input->post('nama');
-		$ecp  = md5($nama);
-		$ecp  = str_split($ecp, 5);
-		$pw   = $ecp[0];
-		unset($ecp);
-
-
 		if ($this->form_validation->run() == false) {
 			$this->index();
 		} else {
+			$nip  = str_replace(" ", "", $this->input->post('nip'));
+			$nama = $this->input->post('nama');
+			$ecp  = md5($nama);
+			$ecp  = str_split($ecp, 5);
+			$pw   = $ecp[0];
+			unset($ecp);
+			
 			$data = array(
 				'nip' => $this->input->post('nip'), 
 				'nama' => $this->input->post('nama'), 
