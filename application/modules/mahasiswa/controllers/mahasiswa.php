@@ -191,6 +191,15 @@ class Mahasiswa extends MX_Controller {
 		}
 	}
 
+	public function cari()
+	{
+		$cari = $this->input->post('kunci');
+		if (!empty($cari)) {
+			$this->session->set_flashdata('key', $cari);
+		}
+		$this->index();
+	}
+
 }
 
 /* End of file mahasiswa.php */

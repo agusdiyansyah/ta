@@ -7,8 +7,6 @@
 	}
 </style>
 <body class="cbp-spmenu-push" onload="expand()">
-	<br>
-	<br>
 	<div class="row">
 		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 			<div class="panel panel-default">
@@ -17,13 +15,30 @@
 		            	Jadwal
 		            </a>
 		            <div>
+		            	<a href="" class="btn-acak"><i class="fa fa-refresh"></i></a>
 		            	<a href="javascript:;" class="btn-print"><i class="fa fa-print"></i></a>
 		            </div>
 				</div>
 				<div class="panel-body">
 					<?php 
+						echo "<div class='text-center' style='color:#000;font-size:14pt;font-weight:bold'>".$meta['header']."</div><br>";
 						echo $table;
 					?>
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+						<div class="col-xs-3 col-xs-push-9 col-sm-3 col-sm-push-9 col-md-3 col-md-push-9 col-lg-3 col-lg-push-9" style="color:#000">
+							Pontianak, <?php echo $meta['tgl_jadwal'] ?>
+							<br>
+							Panitia Tugas Akhir
+							<br>
+							Penanggungjawab Administrasi
+							<br>
+							<br>
+							<br>
+							<b><u><?php echo $meta['nama'] ?></u></b>
+							<br>
+							NIP. <?php echo $meta['nip'] ?>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -59,6 +74,22 @@
 	$(".btn-print").click(function() {
 		$('.panel-body .table').css('color', '#fff !important');
 		$('.panel-body').printArea();
+	});
+
+	$('.btn-acak').click(function() {
+		$.ajax({
+			url: 'jadwal/index/1',
+		})
+		.done(function() {
+			console.log("success");
+		})
+		.fail(function() {
+			console.log("error");
+		})
+		.always(function() {
+			console.log("complete");
+		});
+		
 	});
 
 	// function

@@ -18,7 +18,8 @@
     <link href="<?php echo base_url().'gudang/' ?>font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
     <link href="<?php echo base_url().'gudang/' ?>css/custom.css" rel="stylesheet">
-
+    <link href="<?php echo base_url().'gudang/' ?>css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+    
     <!-- jQuery -->
     <script src="<?php echo base_url().'gudang/' ?>js/jquery.js"></script>
 
@@ -29,6 +30,11 @@
     <script src="<?php echo base_url() ?>gudang/js/plugins/jquery.slimscroll.js"></script>
     <script src="<?php echo base_url() ?>gudang/js/jquery.PrintArea.js"></script>
     <script src="<?php echo base_url() ?>gudang/js/plugins/chart.js"></script>
+    <script src="<?php echo base_url() ?>gudang/js/moment.js"></script>
+    <script src="<?php echo base_url() ?>gudang/js/bootstrap.datetimepicker.min.js"></script>
+    
+    <script type="text/javascript" src="<?php echo base_url(); ?>gudang/js/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>gudang/js/mustache.js"></script>
 
     <script src="<?php echo base_url().'gudang/' ?>js/libs/custom.js"></script>
 

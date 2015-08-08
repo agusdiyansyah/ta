@@ -6,7 +6,7 @@ class M_mhs extends CI_Model {
 	private $tbl = "mahasiswa";
 
 	function getAll($limit = array()){
-		// $this->filter();
+		$this->_filter();
 		$this->db->select('id_mhs, id_dosen, nama m_nama, judul');
 		$this->db->order_by('id_mhs', 'desc');
 		if($limit == NULL){
@@ -61,6 +61,16 @@ class M_mhs extends CI_Model {
 	{
 		$this->db->insert('mahasiswa', $object);
 		return $this->db->insert_id();
+	}
+
+	public function _filter()
+	{
+		$cari = $this->session->flashdata('key');
+		if (!empty($cari)) {
+			$this->db->like('nama', $cari);
+			$this->db->or_like('nim', $cari);
+			$this->db->or_like('judul', $cari);
+		}
 	}
 
 }

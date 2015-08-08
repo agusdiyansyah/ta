@@ -1,6 +1,22 @@
 var expand = true;
 
-// link('statistic','');
+// Default
+var 
+	module = 'jadwal',
+	title  = 'BIMBOL';
+$.ajax({
+    url: module,
+    cache: false,
+    dataType: 'html',
+    success: function(html) {
+        $(".content").html(html);
+        $(".title").html(title);
+    }
+})
+.fail(function() {
+    alert( "error" );
+    console.log("error");
+});
 
 $(document).ajaxStart(function(evt, jqXHR, settings){
 	$('#myModal').modal({
@@ -46,7 +62,7 @@ $(document).ajaxComplete(function(evt, jqXHR, settings){
 function small () {
 	$("#wrapper").css('padding-left', '50px');
 	$(".side-nav").css('width', '50px');
-	$(".side-nav span").css('display', 'none');
+	$(".navbar-ex1-collapse span").css('display', 'none');
 	expand = true;
 }
 

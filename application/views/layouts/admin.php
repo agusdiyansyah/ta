@@ -13,6 +13,12 @@
         .modal{
             background: rgba(54,65,80,.5);
         }
+        .active ul{
+            background: #2F3845;
+        }
+        .side-nav li a:focus, .side-nav ul .active{
+            background: #272E38 !important;
+        } 
     </style>
 </head>
 <body>
@@ -115,14 +121,14 @@
                     </ul>
                 </li>
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">John Smith <b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo $this->session->userdata('u_nicename'); ?> <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li>
                             <a href="#"><i class="fa fa-user"></i>&nbsp Profile</a>
                         </li>
                         <li class="divider"></li>
                         <li>
-                            <a href="#"><i class="fa fa-power-off"></i>&nbsp Log Out</a>
+                            <a href="<?php echo base_url() ?>user/log_out"><i class="fa fa-power-off"></i>&nbsp Log Out</a>
                         </li>
                     </ul>
                 </li>
@@ -133,18 +139,53 @@
                     <li data-module="statistic" data-title="Dashboard" class="link">
                         <a href="javascript:;"><i class="fa fa-dashboard"></i>&nbsp <span>Dashboard</span></a>
                     </li>
+                    <li data-module="user" data-title="User" class="link">
+                        <a href="javascript:;"><i class="fa fa-user"></i>&nbsp <span>User</span></a>
+                    </li>
                     <li data-module="mahasiswa" data-title="Mahasiswa" class="link">
                         <a href="javascript:;" ><i class="fa fa-graduation-cap"></i>&nbsp <span>Mahasiswa</span></a>
                     </li>
                     <li  data-module="dosen" data-title="Dosen" class="link">
                         <a href="javascript:;"><i class="fa fa-users"></i>&nbsp <span>Dosen</span></a>
                     </li>
-                    <li  data-module="jadwal" data-title="Jadwal" class="link">
+                    <!-- <li  data-module="jadwal" data-title="Jadwal" class="link">
                         <a href="javascript:;"><i class="fa fa-calendar"></i>&nbsp <span>Jadwal</span></a>
-                    </li>
-                    <li data-module="bimbingan" data-title="Bimbingan" class="link">
+                    </li> -->
+                    <!-- <li data-module="bimbingan" data-title="Bimbingan" class="link">
                         <a href="javascript:;"><i class="fa fa-calendar"></i>&nbsp <span>Bimbingan</span></a>
+                    </li> -->
+                    <li class="colapse drop">
+                        <a href="javascript:;" data-toggle="collapse" data-target="#demo">
+                            <i class="fa fa-calendar"></i>
+                            &nbsp <span>Jadwal</span> 
+                            <span style="float:right" class="text-right">
+                                <i class="fa fa-fw fa-caret-down"></i>
+                            </span>
+                        </a>
+                        <ul id="demo" class="collapse">
+                            <li data-module="jadwal" data-title="Jadwal" class="link">
+                                <a href="#">&nbsp<span>List</span></a>
+                            </li>
+                            <li data-module="jadwal/setting" data-title="Jadwal" class="link">
+                                <a href="#">&nbsp<span>Setting</span></a>
+                            </li>
+                        </ul>
                     </li>
+                     <li data-module="bimbingan" data-title="Bimbingan" class="link">
+                        <a href="javascript:;"><i class="fa fa-rss"></i>&nbsp <span>Bimbingan</span></a>
+                    </li>
+
+                    <!-- <li class="colapse drop">
+                        <a href="javascript:;" data-toggle="collapse" data-target="#demo1"><i class="fa fa-calendar"></i>&nbsp <span>Bimbingan</span> <span style="float:right" class="text-right"><i class="fa fa-fw fa-caret-down"></i></span></a>
+                        <ul id="demo1" class="collapse">
+                            <li  data-module="bimbingan" data-title="Bimbingan" class="link">
+                                <a href="#">&nbsp<span>Pesan</span></a>
+                            </li>
+                            <li>
+                                <a href="#">&nbsp<span>Broadcast Message</span></a>
+                            </li>
+                        </ul>
+                    </li> -->
                     <!-- <li>
                         <a href="javascript:;" data-toggle="collapse" data-target="#demo"><i class="fa fa-calendar"></i>&nbsp Jadwal <i class="fa fa-fw fa-caret-down"></i></a>
                         <ul id="demo" class="collapse">
@@ -167,7 +208,15 @@
 				<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 					<!-- Page Heading -->
 	                <br>
-
+                    <?php  
+                    if ($this->session->userdata('pass_tmp')) {
+                        ?>
+                        <div class="alert alert-danger" role="alert">
+                            <i class="fa fa-warning"></i> Demi keamanan akun anda, harap untuk mengganti password yang diberikan admin, terimakasih !!
+                        </div>
+                        <?php
+                    }
+                    ?>
 	                <div class="content">
 						<?php  
                            // echo Modules::run("statistic");
@@ -199,10 +248,21 @@
     <!-- end of modal -->
 </body>
 <script>
+    $(".drop").click(function() {
+        $(".link").removeClass('active');
+        $(".drop").removeClass('active');
+        $(this).addClass('active');
+        $(".collapse").removeClass('in');
+        $("#wrapper").css('padding-left', '225px');
+        $(".side-nav").css('width', '225px');
+        $(".side-nav span").css('display', 'inline-block');
+    });
+
     $(".link").click(function() {
         var module = $(this).data('module'), title = $(this).data('title');
         
         $(".link").removeClass('active');
+        $(".drop").removeClass('active');
         $(this).addClass('active');
 
         $.ajax({
@@ -216,10 +276,11 @@
                 $(".side-nav").css('width', '225px');
                 $(".side-nav span").css('display', 'inline-block');
                 if (module == 'jadwal') {
+                    $(".collapse").removeClass('in');
                     small();
                 };
-                $(".content").html(html).async;
-                $(".title").html(title).async;
+                $(".content").html(html);
+                $(".title").html(title);
             }
         })
         .fail(function() {

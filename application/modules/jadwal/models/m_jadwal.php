@@ -4,6 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class M_jadwal extends CI_Model {
 
 	private $tbl = "mahasiswa";
+
 	function getAll(){
 		// $this->filter();
 
@@ -14,6 +15,21 @@ class M_jadwal extends CI_Model {
 		return $this->db->get($this->tbl);
 	}
 
+	public function penguji($object, $ac)
+	{
+		if ($ac == 1) {
+			$ls = $this->db->insert('meta', $object);
+		} else {
+			$this->db->where('id', '0');
+			$this->db->where('meta_key', '1');
+			$ls = $this->db->update('meta', $object);
+		}
+		if ($ls) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 	public function getDosen()
 	{
@@ -50,6 +66,36 @@ class M_jadwal extends CI_Model {
 	public function query($sql)
 	{
 		return $this->db->query($sql);
+	}
+
+	public function set_jadwal($object)
+	{
+		$sql = $this->cek_jadwal(0);
+		if ($sql->num_rows() > 0) {
+			$this->db->where('id', '0');
+			$this->db->where('meta_key', '0');
+			$set = $this->db->update('meta', $object);
+		} else {
+			$set = $this->db->insert('meta', $object);
+		}
+		if ($set) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public function get_set()
+	{
+		$this->db->where('id', '0');
+		return $this->db->get('meta');
+	}
+
+	public function cek_jadwal($key = 1)
+	{
+		$this->db->where('id', '0');
+		$this->db->where('meta_key', $key);
+		return $this->db->get('meta');
 	}
 
 }

@@ -1,9 +1,13 @@
 *{
-	font-size: 11pt;
-	-webkit-transition: all 0.3s ease-out;
+	/*font-size: 11pt;*/
+	/*-webkit-transition: all 0.3s ease-out;
     -moz-transition: all 0.3s ease-out;
     -o-transition: all 0.3s ease-out;
-    transition: all 0.3s ease-out;
+    transition: all 0.3s ease-out;*/
+}
+
+.merem{
+	display: none;
 }
 
 .navbar-inverse .navbar-nav>.active>a, 
@@ -87,7 +91,7 @@ th{
 .top-nav li a i{
     font-size: 15px !important;
 }
-.top-nav .badge {
+.top-nav .badge{
     position: absolute;
     top: 5px;
     left: 0px;

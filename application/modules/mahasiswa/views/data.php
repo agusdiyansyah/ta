@@ -79,8 +79,6 @@
 </style>
 
 <body class="cbp-spmenu-push">
-	<br>
-	<br>
 	<div class="row">
 		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 			<div class="panel panel-default">
@@ -90,9 +88,21 @@
 		            </a>
 				</div>
 				<div class="panel-body">
+					<div class="row">
+						<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+							<div class="input-group">
+								<input type="text" class="form-control cari">
+								<div class="input-group-btn">
+									<button type="button" class="btn btn-default btn-src"><i class="fa fa-search"></i></button>
+								</div>
+							</div>
+						</div>
+						<div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+							<?php echo $pagination; ?>
+						</div>
+					</div>
 					<?php 
 						echo 
-							$pagination.
 							$table. 
 							$pagination; 
 					?>
@@ -154,6 +164,32 @@
 
 	$("#back").click(function() {
 		$("#cbp-spmenu-s2").removeClass('cbp-spmenu-open');
+	});
+
+	$('.btn-src').click(function() {
+		var
+			src = $('.cari').val();
+
+		$.ajax({
+			url: 'mahasiswa/cari',
+			type: 'post',
+			dataType: 'html',
+			cache: false,
+			data: 'kunci='+src,
+			success:function(html) {
+				$(".content").load('mahasiswa');
+			}
+		})
+		.done(function() {
+			console.log("success");
+		})
+		.fail(function() {
+			console.log("error");
+		})
+		.always(function() {
+			console.log("complete");
+		});
+		
 	});
 
 	

@@ -16,9 +16,21 @@ LOAD CSS
 				</div>
 				</div>
 				<div class="panel-body">
+					<div class="row">
+						<div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+							<div class="input-group">
+								<input type="text" class="form-control cari">
+								<div class="input-group-btn">
+									<button type="button" class="btn btn-default btn-src"><i class="fa fa-search"></i></button>
+								</div>
+							</div>
+						</div>
+						<div class="col-xs-7 col-sm-7 col-md-7 col-lg-7">
+							<?php echo $pagination; ?>
+						</div>
+					</div>
 					<?php 
 						echo 
-							$pagination.
 							$table. 
 							$pagination; 
 					?>

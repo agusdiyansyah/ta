@@ -10,7 +10,7 @@ class Jadwal extends MX_Controller {
 		date_default_timezone_set('Asia/Jakarta');
 	}
 
-	public function index()
+	public function index($acak = 0)
 	{
 		// included library
 			$this->load->library('table');	
@@ -18,18 +18,22 @@ class Jadwal extends MX_Controller {
 		/**
 		CONFIG
 		*/
+			$set = $this->m_jadwal->get_set()->row();
+			$json = json_decode($set->meta_value);
 			// select field
 			$sql 				= 'select id_dosen from dosen';
 
 			// setingan jadwal
-			$title_table		= "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nam cursus. Morbi ut mi. Nullam enim leo, egestas id, condimentum at, laoreet mattis, massa. <br><hr>";
+			$title_table		= $json->title;
+			$nama				= $json->nama;
+			$nip 				= $json->nip;
 			$jumlah_penguji   	= 3;
-			$tanggal_mulai		= "2015-08-15";
-			$awal             	= "07:00";
-			$batas_ujian	  	= "11:00";
-			$kondisi          	= "<";
-			$waktu_istirahat  	= "00:05"; // 5 menit
-			$waktu_ujian      	= "00:45"; // 45 menit
+			$tanggal_mulai		= $json->tgl_ujian;
+			$awal             	= $json->jam_mulai;
+			$batas_ujian	  	= $json->jam_selesai;
+			$kondisi          	= $json->kondisi;
+			$waktu_istirahat  	= $json->jam_istirahat; // 5 menit
+			$waktu_ujian      	= $json->jam_ujian; // 45 menit
 			$batas            	= floor(($this->m_jadwal->query($sql)->num_rows()) / $jumlah_penguji);
 
 			// setingan table
@@ -42,10 +46,6 @@ class Jadwal extends MX_Controller {
 		/**
 		END OF CONFIG
 		*/
-
-		// cari dosen penguji
-
-		// 
 
 		// apply setingan table
 		$this->table->set_template($template_table);
@@ -66,34 +66,11 @@ class Jadwal extends MX_Controller {
 		CARI PENGUJI LOK 
 		PENING PALAK DIBUAT NYE
 		*/
-		$res = $mahasiswa->result();
-		$this->load->model('dosen/m_dos');
-		$query = $this->m_dos->getAll();
-		$a = 1;
-		// buat array dosen
-		foreach ($query->result() as $key) {
-			$dos[$key->id_dosen] = $key->nama;
-		}
-		$urut = 0;
-		$a = 0;
-		$uji = array();
-		$data_dosen = $dos;
-		foreach ($res as $rec) {
-			$a++;
-			unset($data_dosen[$rec->id_dosen]);
-			if ($a == $batas) {
-				$a = 0;
-				$uji[$urut] = array();
-				foreach ($data_dosen as $key => $value) {
-					array_push($uji[$urut], $value);
-				}
-				$urut++;
-				$data_dosen = $dos;
-			}
-		}
 
 		$dos = array();
 		$mhs = array();
+
+		// table jadwal
 		$table = "<table class='table table-bordered'>
 					<thead>
 						<tr>
@@ -110,13 +87,87 @@ class Jadwal extends MX_Controller {
 		$hari = 1;
 		$batas_ujian = (($kondisi == '<') ? $this->jam($batas_ujian, $waktu_ujian, '-') : $batas_ujian);
 		$u = 0;
-		$acak = 1;
+		
+		$jdl = $this->m_jadwal->cek_jadwal();
+		$res = $mahasiswa->result();
+		
+		$urut = 0;
+		$a = 0;
+		$c = 0;
+		$uji = array();
+
+		if ($jdl->num_rows() == 0) {
+
+			$this->load->model('dosen/m_dos');
+			$query = $this->m_dos->getAll();
+			$a = 1;
+			// buat array dosen
+			foreach ($query->result() as $key) {
+				$dos[$key->id_dosen] = $key->nama;
+			}
+
+			
+			$data_dosen = $dos;
+			
+			// membuat daftar dosen penguji yang tidak membimbing
+			$c = 0;
+			$mhs = array();
+			while (count($res) != $c && count($res) != 0) {
+				$a = 0;
+				$dos_uji = array();
+				foreach ($res as $rec) {
+					if (!in_array($rec->id_dosen, $dos_uji) && !in_array($rec->id_mhs, $mhs)) {
+						array_push($dos_uji, $rec->id_dosen);
+						array_push($mhs, $rec->id_mhs);
+						unset($data_dosen[$rec->id_dosen]);
+						// echo $rec->d_nama.' | ';
+						$c++;
+						$a++;
+					}
+					if ($a == $batas || count($res) == $c) {
+						// echo "<br>";
+						$uji[$urut] = array();
+						foreach ($data_dosen as $key => $value) {
+							array_push($uji[$urut], $value);
+						}
+						$data_dosen = $dos;
+						$urut++;
+						break;
+					}
+				}
+			}
+			$obj = array(
+				'id' => 0,
+				'meta_key' => 1,
+				'meta_value' => json_encode($uji),
+				'meta_group' => 0
+			);
+			$this->m_jadwal->penguji($obj, 1);
+		}
+
+		$jdl = $this->m_jadwal->cek_jadwal();
+		$list = $jdl->row();
+		$uji = json_decode($list->meta_value);
+
+		if ($acak == 1) {
+			$mta = array();
+			for ($i=0; $i < count($uji); $i++) { 
+				$mta[$i] = $this->acak($uji[$i]);
+			}
+			$uji = $mta;
+
+			$obj = array(
+				'id' => 0,
+				'meta_key' => 1,
+				'meta_value' => json_encode($uji),
+				'meta_group' => 0
+			);
+			$this->m_jadwal->penguji($obj, 2);
+		}
 		while ((count($mhs)) != (count($res))) {
 			$a = 0;
 			$b = 0;
-			if ($acak = 1) {
-				shuffle($uji[$u]);
-			}
+
 			$table .= "<tbody>";
 			$jam_selesai = $this->jam($jam_mulai, $waktu_ujian);
 			foreach ($res as $rec) {
@@ -145,7 +196,7 @@ class Jadwal extends MX_Controller {
 									<td rowspan='2'>$no</td>
 									<td rowspan='2'>" . ucwords(strtolower($rec->m_nama)) . "</td>
 									<td rowspan='2'>" . $rec->d_nama . "</td>
-									<td>" . ((array_key_exists($b, $uji[$u])) ? $uji[$u][$b] : 'gx ada pengujinya') . "</td>
+									<td>" . (!empty($uji[$u][$b]) ? $uji[$u][$b] : 'gx ada pengujinya') . "</td>
 									<td rowspan='2'>" . $rec->judul . "</td>
 									<td style='vertical-align:middle' rowspan='". $batas*2 ."'> 
 										<div class='verticalText'>
@@ -156,8 +207,9 @@ class Jadwal extends MX_Controller {
 								</tr>
 						";
 						$b++;
+						
 						$table .= "<tr>
-									<td>" . ((array_key_exists($b, $uji[$u])) ? $uji[$u][$b] : 'gx ada pengujinya') . "</td>
+									<td>" . (!empty($uji[$u][$b]) ? $uji[$u][$b] : 'gx ada pengujinya') . "</td>
 								</tr>";
 						$b++;
 						continue;
@@ -167,14 +219,14 @@ class Jadwal extends MX_Controller {
 									<td rowspan='2'>$no</td>
 									<td rowspan='2'>" . ucwords(strtolower($rec->m_nama)) . "</td>
 									<td rowspan='2'>" . $rec->d_nama . "</td>
-									<td>" . ((array_key_exists($b, $uji[$u])) ? $uji[$u][$b] : 'gx ada pengujinya') . "</td>
+									<td>" . (!empty($uji[$u][$b]) ? $uji[$u][$b] : 'gx ada pengujinya') . "</td>
 									<td rowspan='2'>" . $rec->judul . "</td>
 									<td rowspan='2' class='text-center'> R-" . $a . " </td>
 								</tr>
 						";
 						$b++;
 						$table .= "<tr>
-									<td>" . ((array_key_exists($b, $uji[$u])) ? $uji[$u][$b] : 'gx ada pengujinya') . "</td>
+									<td>" . (!empty($uji[$u][$b]) ? $uji[$u][$b] : 'gx ada pengujinya') . "</td>
 								</tr>";
 						$b++;
 					}
@@ -194,15 +246,36 @@ class Jadwal extends MX_Controller {
 			$jam_mulai = $this->jam($jam_mulai, $waktu_istirahat);
 			if (strtotime($jam_mulai) >= strtotime($batas_ujian)) {
 				$hari = 1;
+				$tanggal_mulai = date('d-m-Y', strtotime('+1 days', strtotime($tanggal_mulai)));
 				$jam_mulai = $awal;
 			}
 			$table .= "</tbody>";
 			$urut++;
+			$u++;
 		}
+
 		$table .= "</table>";
-		$data['table']       = /*$this->table->generate();*/ $table;
+
+		$data['meta']		= array('header' => $title_table, 'nama' => $nama, 'nip' => $nip, 'tgl_jadwal' => $json->tgl_jadwal);
+		$data['table']      = $table;
 		$this->load->view('data', $data);
 	}
+
+	function acak($list) { 
+		if (!is_array($list)) 
+			return $list; 
+
+		$keys = array_keys($list); 
+		shuffle($keys); 
+		$random = array(); 
+		$i = 0;
+		foreach ($keys as $key) {
+			$random[$i] = $list[$key]; 
+			$i++;
+		}
+
+		return $random; 
+	} 
 
 	public function tambah_proses()
 	{
@@ -286,6 +359,66 @@ class Jadwal extends MX_Controller {
 			if ($del) {
 				echo json_encode(array('stat' => true));
 			}
+		}
+	}
+
+	public function setting()
+	{
+		$sql = $this->m_jadwal->cek_jadwal(0);
+		$data['meta'] = array(
+			'title' => '',
+			'tgl_ujian' => '',
+			'jam_mulai' => '',
+			'kondisi' => '',
+			'jam_selesai' => '',
+			'jam_istirahat' => '',
+			'jam_ujian' => '',
+			'tgl_jadwal' => '',
+			'nama' => '',
+			'nip' => '',
+		);
+		if ($sql->num_rows() > 0) {
+			$row = $sql->row();
+			$data['meta'] = json_decode($row->meta_value);
+		}
+		$this->load->view('form', $data);
+	}
+
+	public function simpan_setting()
+	{
+		// title
+		// tgl_ujian
+		// jam_mulai
+		// kondisi
+		// jam_selesai
+		// jam_istirahat
+		// jam_ujian
+		// tgl_jadwal
+		// nama
+		// nip 
+		$set = array(
+			"title" 		=> $this->input->post('title'),
+			"tgl_ujian" 	=> $this->input->post('tgl_ujian'),
+			"jam_mulai" 	=> $this->input->post('jam_mulai'),
+			"kondisi" 		=> $this->input->post('kondisi'),
+			"jam_selesai" 	=> $this->input->post('jam_selesai'),
+			"jam_istirahat" => $this->input->post('jam_istirahat'),
+			"jam_ujian" 	=> $this->input->post('jam_ujian'),
+			"tgl_jadwal" 	=> $this->input->post('tgl_jadwal'),
+			"nama" 			=> $this->input->post('nama'),
+			"nip" 			=> $this->input->post('nip'),
+		);
+		$data = array(
+			'id' 			=> 0,
+			'meta_key' 		=> 0,
+			'meta_value' 	=> json_encode($set),
+			'meta_group' 	=> 0,
+		);
+		$setting = $this->m_jadwal->set_jadwal($data);
+		if ($setting) {
+			echo json_encode(array('stat' => true));
+		} else {
+			echo json_encode(array('stat' => false));
 		}
 	}
 

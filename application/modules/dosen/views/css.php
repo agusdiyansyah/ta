@@ -1,6 +1,6 @@
 <style type="text/css">
 	.wait{
-		font-size: 10pt;
+		font-size: 12pt;
 		color: #95A5A6;
 		font-weight: normal;
 	}
