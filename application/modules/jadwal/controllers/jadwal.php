@@ -10,7 +10,7 @@ class Jadwal extends MX_Controller {
 		date_default_timezone_set('Asia/Jakarta');
 	}
 
-	public function index($acak = 0)
+	public function index($acak = 0, $cetak = false)
 	{
 		// included library
 			$this->load->library('table');	
@@ -71,7 +71,7 @@ class Jadwal extends MX_Controller {
 		$mhs = array();
 
 		// table jadwal
-		$table = "<table class='table table-bordered'>
+		$table = "<table class='table table-bordered' style='border-color: #000'>
 					<thead>
 						<tr>
 							<th style='width:50px'>No</th>
@@ -179,14 +179,14 @@ class Jadwal extends MX_Controller {
 					if ($a == 1) {
 						if ($hari == 1) {
 							$table .= "
-								<tr class='alert-success text-center'>
+								<tr class='alert-success text-center batas'>
 									<td colspan='7'>$tanggal_mulai</td>
 								</tr>
 							";
 							$hari--;
 						} else {
 							$table .= "
-								<tr>
+								<tr class='batas'>
 									<td colspan='7' class='text-center'>istirahat</td>
 								</tr>
 							";
@@ -258,7 +258,92 @@ class Jadwal extends MX_Controller {
 
 		$data['meta']		= array('header' => $title_table, 'nama' => $nama, 'nip' => $nip, 'tgl_jadwal' => $json->tgl_jadwal);
 		$data['table']      = $table;
-		$this->load->view('data', $data);
+		
+		if ($cetak) {
+			return $data;
+		} else {
+			$this->load->view('data', $data);
+		}
+
+	}
+
+	public function cetak()
+	{
+		// <link href='".base_url()."gudang/css/bootstrap.min.css' rel='stylesheet'>
+		$css = "	
+			<link href='".base_url()."gudang/css/module/jadwal_cetak.css' rel='stylesheet' type='text/css'>
+		";
+		$html = $this->index(0, true);
+		$header = "<div class='header'>".$html['meta']['header']."</div><br>";
+		$fother = '
+			<div class="fother">
+				<div class="" style="color:#000">
+					Pontianak, '.$html["meta"]["tgl_jadwal"].'
+					<br>
+					Panitia Tugas Akhir
+					<br>
+					Penanggungjawab Administrasi
+					<br>
+					<br>
+					<br>
+					<b><u>'. $html["meta"]["nama"] .'</u></b>
+					<br>
+					NIP. '. $html["meta"]["nip"] .'
+				</div>
+			</div>
+		';
+		$data = "
+			$header
+			<br>
+			{$html['table']}
+			<br>
+			$fother
+		";
+		// $html = $this->coba();
+		$this->load->library('m_pdf');
+		$pdf = $this->m_pdf->load();
+		$pdf->WriteHTML($css, 1);
+		$pdf->WriteHTML($data, 2);
+		$pdf->Output();
+	}
+
+	public function coba()
+	{
+		$table = '<table class="table table-bordered">
+			      <thead>
+			        <tr>
+			          <th>#</th>
+			          <th>First Name</th>
+			          <th>Last Name</th>
+			          <th>Username</th>
+			        </tr>
+			      </thead>
+			      <tbody>
+			        <tr>
+			          <td rowspan="2">1</td>
+			          <td>Mark</td>
+			          <td>Otto</td>
+			          <td>@mdo</td>
+			        </tr>
+			        <tr>
+			          <td>Mark</td>
+			          <td>Otto</td>
+			          <td>@TwBootstrap</td>
+			        </tr>
+			        <tr>
+			          <td>2</td>
+			          <td>Jacob</td>
+			          <td>Thornton</td>
+			          <td>@fat</td>
+			        </tr>
+			        <tr>
+			          <td>3</td>
+			          <td colspan="2">Larry the Bird</td>
+			          <td>@twitter</td>
+			        </tr>
+			      </tbody>
+			    </table>';
+		return $table;
 	}
 
 	function acak($list) { 
@@ -364,61 +449,57 @@ class Jadwal extends MX_Controller {
 
 	public function setting()
 	{
-		$sql = $this->m_jadwal->cek_jadwal(0);
-		$data['meta'] = array(
-			'title' => '',
-			'tgl_ujian' => '',
-			'jam_mulai' => '',
-			'kondisi' => '',
-			'jam_selesai' => '',
-			'jam_istirahat' => '',
-			'jam_ujian' => '',
-			'tgl_jadwal' => '',
-			'nama' => '',
-			'nip' => '',
-		);
-		if ($sql->num_rows() > 0) {
-			$row = $sql->row();
-			$data['meta'] = json_decode($row->meta_value);
+		$this->load->module('user');
+		if ($this->user->grant('1')) {
+			$sql = $this->m_jadwal->cek_jadwal(0);
+			$data['meta'] = array(
+				'title' => '',
+				'tgl_ujian' => '',
+				'jam_mulai' => '',
+				'kondisi' => '',
+				'jam_selesai' => '',
+				'jam_istirahat' => '',
+				'jam_ujian' => '',
+				'tgl_jadwal' => '',
+				'nama' => '',
+				'nip' => '',
+			);
+			if ($sql->num_rows() > 0) {
+				$row = $sql->row();
+				$data['meta'] = json_decode($row->meta_value);
+			}
+			$this->load->view('form', $data);
 		}
-		$this->load->view('form', $data);
 	}
 
 	public function simpan_setting()
 	{
-		// title
-		// tgl_ujian
-		// jam_mulai
-		// kondisi
-		// jam_selesai
-		// jam_istirahat
-		// jam_ujian
-		// tgl_jadwal
-		// nama
-		// nip 
-		$set = array(
-			"title" 		=> $this->input->post('title'),
-			"tgl_ujian" 	=> $this->input->post('tgl_ujian'),
-			"jam_mulai" 	=> $this->input->post('jam_mulai'),
-			"kondisi" 		=> $this->input->post('kondisi'),
-			"jam_selesai" 	=> $this->input->post('jam_selesai'),
-			"jam_istirahat" => $this->input->post('jam_istirahat'),
-			"jam_ujian" 	=> $this->input->post('jam_ujian'),
-			"tgl_jadwal" 	=> $this->input->post('tgl_jadwal'),
-			"nama" 			=> $this->input->post('nama'),
-			"nip" 			=> $this->input->post('nip'),
-		);
-		$data = array(
-			'id' 			=> 0,
-			'meta_key' 		=> 0,
-			'meta_value' 	=> json_encode($set),
-			'meta_group' 	=> 0,
-		);
-		$setting = $this->m_jadwal->set_jadwal($data);
-		if ($setting) {
-			echo json_encode(array('stat' => true));
-		} else {
-			echo json_encode(array('stat' => false));
+		$this->load->module('user');
+		if ($this->user->grant('1')) {
+			$set = array(
+				"title" 		=> $this->input->post('title'),
+				"tgl_ujian" 	=> $this->input->post('tgl_ujian'),
+				"jam_mulai" 	=> $this->input->post('jam_mulai'),
+				"kondisi" 		=> $this->input->post('kondisi'),
+				"jam_selesai" 	=> $this->input->post('jam_selesai'),
+				"jam_istirahat" => $this->input->post('jam_istirahat'),
+				"jam_ujian" 	=> $this->input->post('jam_ujian'),
+				"tgl_jadwal" 	=> $this->input->post('tgl_jadwal'),
+				"nama" 			=> $this->input->post('nama'),
+				"nip" 			=> $this->input->post('nip'),
+			);
+			$data = array(
+				'id' 			=> 0,
+				'meta_key' 		=> 0,
+				'meta_value' 	=> json_encode($set),
+				'meta_group' 	=> 0,
+			);
+			$setting = $this->m_jadwal->set_jadwal($data);
+			if ($setting) {
+				echo json_encode(array('stat' => true));
+			} else {
+				echo json_encode(array('stat' => false));
+			}
 		}
 	}
 

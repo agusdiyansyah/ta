@@ -42,17 +42,9 @@ class M_mhs extends CI_Model {
 		$this->db->where('id_mhs', $id);
 		$mhs = $this->db->delete('mahasiswa');
 		if ( $mhs ) {
-			$this->db->select('uid');
-			$this->db->where('rel_id', $id);
-			$this->db->where('u_level', '3');
-			$user = $this->db->get('user')->row();
-
 			$this->db->where('rel_id', $id);
 			$this->db->where('u_level', '3');
 			$this->db->delete('user');
-
-			$this->db->where('id', $user->uid);
-			$this->db->delete('meta');
 		}
 		return $this;
 	}

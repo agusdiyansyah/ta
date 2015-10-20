@@ -47,7 +47,7 @@
 						<div class="input-group">
 							<input type="text" class="form-control cari">
 							<div class="input-group-btn">
-								<button type="button" class="btn btn-default btn-src"><i class="fa fa-search"></i></button>
+								<button type="submit" class="btn btn-default btn-src"><i class="fa fa-search"></i></button>
 							</div>
 						</div>
 					</div>
@@ -69,6 +69,40 @@
 	// var declaration
 	var 
 		body 		= $("body");
+
+	$('.edit').click(function(e) {
+		var id = $(this).data('uid');
+		e.preventDefault();
+		$('.content').load('user/detil/'+id);
+	});
+
+	$('#action').click(function() {
+		$('.content').load('user/form');
+	});
+
+	$('.del').click(function() {
+		var uid = $(this).data('uid');
+		$.ajax({
+			url: 'user/del/'+uid,
+			cache: false,
+			dataType: 'json',
+			success: function (json) {
+				if (json.stat) {
+					$('.content').load('user');
+				};
+			}
+		})
+		.done(function() {
+			console.log("success");
+		})
+		.fail(function() {
+			console.log("error");
+		})
+		.always(function() {
+			console.log("complete");
+		});
+		
+	});
 
 	// function
 	function page (num, id) {
@@ -102,24 +136,6 @@
 			}
 		});
 
-	}
-
-	function edit (id) {
-		$.ajax({
-			url: 'user/edit/'+id,
-			type: 'post',
-			cache: false,
-			dataType: 'json',
-			success:function(json) {
-				if (json.stat) {
-					$(".id").val(json.id_mhs);
-					$(".nim").val(json.nim);
-					$(".nama").val(json.nama);
-					$(".dosen").val(json.id_dosen);
-					$(".judul").val(json.judul);
-				};
-			}
-		})
 	}
 
 	function proses () {

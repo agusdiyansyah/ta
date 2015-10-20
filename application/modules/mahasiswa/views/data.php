@@ -23,7 +23,7 @@
 	.cbp-spmenu{
 		z-index: 10000;
 		width: 225px;
-		background: #364150;
+		background: #004358;
 		/*border-right: 5px solid #EFF1F3;*/
 	}
 	.form{
@@ -73,7 +73,7 @@
 	#title{
 		font-weight: bold;
 		padding: 9.5px 20px;
-		background: #2B3643;
+		background: #003646;
 		color: #8E9BAE
 	}
 </style>
@@ -82,11 +82,17 @@
 	<div class="row">
 		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 			<div class="panel panel-default">
-				<div class="panel-heading">
-					<a href="javascript:;" id="action">
-		            	Tambah data
-		            </a>
-				</div>
+				<?php  
+				if ($this->session->userdata('u_level') == 1) {
+					?>
+					<div class="panel-heading">
+						<a href="javascript:;" id="action">
+			            	Tambah data
+			            </a>
+					</div>
+					<?php
+				}
+				?>
 				<div class="panel-body">
 					<div class="row">
 						<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">

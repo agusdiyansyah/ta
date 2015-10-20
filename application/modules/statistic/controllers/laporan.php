@@ -13,6 +13,10 @@ class Laporan extends MX_Controller {
 	public function index()
 	{
 		$query = $this->mcl->get_cat();
+
+		$this->load->model('bimbingan/m_kmn');
+		$result['kmn'] = $this->m_kmn->get_pengumuman()->result();
+
 		$result['rec'] = array('nama' => 'Uncategories');
 		if ($query->num_rows() > 0) {
 			$result['rec']['data'] = $query->result();
@@ -92,7 +96,7 @@ class Laporan extends MX_Controller {
 
 	public function detil()
 	{
-		if (empty($this->input->post('id'))) {
+		if ($this->input->post('id') == '') {
 			$this->load->view('laporan/detil');
 		} else {
 			$id = $this->input->post('id');

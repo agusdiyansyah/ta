@@ -3,7 +3,31 @@
 
 
 	// action target
+	$('.btn-src').click(function() {
+		var
+			src = $('.cari').val();
 
+		$.ajax({
+			url: 'dosen/cari',
+			type: 'post',
+			dataType: 'html',
+			cache: false,
+			data: 'kunci='+src,
+			success:function(html) {
+				$(".content").load('dosen');
+			}
+		})
+		.done(function() {
+			console.log("success");
+		})
+		.fail(function() {
+			console.log("error");
+		})
+		.always(function() {
+			console.log("complete");
+		});
+		
+	});
 	// function
 	function page (num, id) {
 		$.ajax({

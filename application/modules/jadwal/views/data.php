@@ -10,15 +10,23 @@
 	<div class="row">
 		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 			<div class="panel panel-default">
-				<div class="panel-heading">
-					<a id="action">
-		            	Jadwal
-		            </a>
-		            <div>
-		            	<a href="" class="btn-acak"><i class="fa fa-refresh"></i></a>
-		            	<a href="javascript:;" class="btn-print"><i class="fa fa-print"></i></a>
-		            </div>
-				</div>
+					<div class="panel-heading">
+						<a id="action">
+			            	Jadwal
+			            </a>
+			            <div>
+				<?php  
+				if ($this->session->userdata('u_level') == 1) {
+					?>
+			            	<a href="" class="btn-set"><i class="fa fa-gears"></i></a>
+			            	<a href="" class="btn-acak"><i class="fa fa-refresh"></i></a>
+			            	<!-- <a href="javascript:;" class="btn-print"><i class="fa fa-print"></i></a> -->
+					<?php
+				}
+				?>
+			            	<a href="jadwal/cetak"><i class="fa fa-print"></i></a>
+			            </div>
+					</div>
 				<div class="panel-body">
 					<?php 
 						echo "<div class='text-center' style='color:#000;font-size:14pt;font-weight:bold'>".$meta['header']."</div><br>";
@@ -69,6 +77,11 @@
 
 	$("#back").click(function() {
 		$("#cbp-spmenu-s2").removeClass('cbp-spmenu-open');
+	});
+
+	$('.btn-set').click(function(e) {
+		e.preventDefault();
+		$('.content').load('jadwal/setting');
 	});
 
 	$(".btn-print").click(function() {

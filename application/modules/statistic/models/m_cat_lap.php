@@ -7,7 +7,7 @@ class M_cat_lap extends CI_Model {
 	{
 		$this->db->order_by('TID', 'asc');
 		$this->db->select('t_name, TID');
-		$this->db->where('t_type', '1');
+		$this->db->where('t_type', 1);
 		$this->db->where('TID <>', '1');
 		return $this->db->get('taxonomy');
 	}	

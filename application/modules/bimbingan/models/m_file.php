@@ -16,10 +16,85 @@ class M_file extends CI_Model {
 		return $sql;
 	}
 
-	public function getfile()
+	public function getasis($pid)
+	{
+		$this->db->select('p_name ass_name, pid ass_pid, p_parent_id ch');
+		$this->db->where('p_type', '5');
+		$this->db->where('TID', $pid);
+		return $this->db->get('post')->result();
+	}
+
+	public function updasis($id, $data)
+	{
+		$this->db->where('pid', $id);
+		$up = $this->db->update('post', $data);
+		if ($up) {
+			return true;
+		} else {
+			return false;
+		}
+		
+	}
+
+	public function rmasis($id)
+	{
+		$this->db->where('pid', $id);
+		$rm = $this->db->delete('post');
+
+		if ($rm) {
+			$this->db->where('p_type', '4');
+			$this->db->where('TID', $id);
+			$this->db->delete('post');
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public function getfile($id)
 	{
 		$this->db->where('p_type', '1');
-		$this->db->where('uid', $this->session->userdata('uid'));
+		$this->db->where('uid', $id);
+		return $this->db->get('post');
+	}
+
+	public function delete($pid)
+	{
+		$this->db->select('p_name');
+		$this->db->where('pid', $pid);
+		$data = $this->db->get('post')->row();
+		$json = json_decode($data->p_name);
+		unlink('gudang/file/laporan/'.$json->file_name_enc);
+
+		$this->db->where('pid', $pid);
+		$file = $this->db->delete('post');
+
+		$this->db->where('TID', $pid);
+		$this->db->where('p_type', '4');
+		$komen = $this->db->delete('post');
+		if ($komen && $file) {
+			return true;
+		} else {
+			return false;
+		}
+		
+	}
+
+	public function update($id, $object)
+	{
+		$this->db->where('pid', $id);
+		$up = $this->db->update('post', $object);
+		if ($up) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public function getid($id)
+	{
+		$this->db->select('p_name');
+		$this->db->where('pid', $id);
 		return $this->db->get('post');
 	}
 

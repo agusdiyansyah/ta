@@ -5,7 +5,7 @@ class M_dos extends CI_Model {
 
 	private $tbl = "dosen";
 	function getAll($limit = array()){
-		// $this->filter();
+		$this->_filter();
 		$this->db->select('id_dosen, nama');
 		$this->db->order_by('id_dosen', 'desc');
 		if($limit == NULL){
@@ -35,17 +35,9 @@ class M_dos extends CI_Model {
 		$this->db->where('id_dosen', $id);
 		$dos = $this->db->delete('dosen');
 		if ( $dos ) {
-			$this->db->select('uid');
-			$this->db->where('rel_id', $id);
-			$this->db->where('u_level', '2');
-			$user = $this->db->get('user')->row();
-
 			$this->db->where('rel_id', $id);
 			$this->db->where('u_level', '2');
 			$this->db->delete('user');
-
-			$this->db->where('id', $user->uid);
-			$this->db->delete('meta');
 		}
 		return $this;
 	}
@@ -54,6 +46,15 @@ class M_dos extends CI_Model {
 	{
 		$this->db->insert('dosen', $object);
 		return $this->db->insert_id();
+	}
+
+	public function _filter()
+	{
+		$cari = $this->session->flashdata('key');
+		if (!empty($cari)) {
+			$this->db->like('nama', $cari);
+			$this->db->or_like('nip', $cari);
+		}
 	}
 
 }

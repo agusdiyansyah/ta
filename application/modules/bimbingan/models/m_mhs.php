@@ -18,7 +18,7 @@ class M_mhs extends CI_Model {
 					nim,
 					m.id_mhs id
 				FROM
-					USER u,
+					user u,
 					mahasiswa m,
 					dosen d
 				WHERE
@@ -31,15 +31,16 @@ class M_mhs extends CI_Model {
 				SELECT
 					mahasiswa.nama name,
 					dosen.nama dosen,
-					mahasiswa.judul
+					mahasiswa.judul,
+					mahasiswa.id_mhs
 				FROM
 					mahasiswa,
 					dosen,
-					USER
+					user
 				WHERE
 					mahasiswa.id_dosen = dosen.id_dosen
-				AND USER .rel_id = mahasiswa.id_mhs
-				AND USER .uid = $id
+				AND user .rel_id = mahasiswa.id_mhs
+				AND user .uid = $id
 			";
 		}
 		$query = $this->db->query($sql);
@@ -50,7 +51,7 @@ class M_mhs extends CI_Model {
 	public function src_id($id)
 	{
 		$sql = "
-			select uid 
+			select uid, rel_id
 			from user
 			where 
 				rel_id = $id
@@ -58,6 +59,39 @@ class M_mhs extends CI_Model {
 		";
 		$query = $this->db->query($sql);
 		return $query;
+	}
+
+	public function mhs($id)
+	{
+		$this->db->select('nama, nim, judul');
+		$this->db->where('id_mhs', $id);
+		return $this->db->get('mahasiswa');
+	}
+
+	public function asistensi($id_mhs)
+	{
+		$this->db->select('uid');
+		$this->db->where('rel_id', $id_mhs);
+		$this->db->where('u_level', '3');
+		$uid = $this->db->get('user')->row();
+		$sql = "
+			select 
+				pp.p_name , pp.p_type, t_name, pp.date
+			from 
+				post p left join post pp on (
+					p.pid = pp.TID
+					and pp.p_type = '5'	
+					and pp.p_parent_id = 1		
+				)
+				left join taxonomy on (
+					pp.TID = taxonomy.TID
+				)
+			where 
+				p.p_type = '1'
+			and p.uid = ".$uid->uid."
+			order by pp.date
+		";
+		return $this->db->query($sql)->result();
 	}
 
 }

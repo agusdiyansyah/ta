@@ -5,7 +5,7 @@ class M_user extends CI_Model {
 
 	function getAll($limit = array()){
 		$this->_filter();
-		$this->db->select('uid, u_nicename, u_level');
+		$this->db->select('uid, u_nicename, u_level, u_reg');
 		$this->db->order_by('uid', 'desc');
 		if($limit == NULL){
 			return $this->db->get('user');
@@ -16,127 +16,91 @@ class M_user extends CI_Model {
 		}
 	}
 
+	public function getcount()
+	{
+		$this->db->select('uid');
+		$this->db->where('u_level', '1');
+		$c = $this->db->get('user')->num_rows();
+		return $c;
+	}
+
 	public function insert($data)
 	{
-		extract($data);
-		$user = array(
-			'rel_id'		=> $rel_id,
-			'u_name' 		=> $u_name, 
-			'u_pass' 		=> '0', 
-			'u_nicename' 	=> $u_nicename, 
-			'u_level'		=> $u_level, 
-		);
-		$usr = $this->db->insert('user', $user);
-		$usr_id = $this->db->insert_id();
+		$usr = $this->db->insert('user', $data);
 
-		/*
-		meta key
-		1 = User Log
-		2 = User password
-		*/
-		$meta = array(
-			array(
-				'id' 			=> $usr_id, 
-				'meta_key' 		=> 1,
-				'meta_value' 	=> '0',
-				'meta_group' 	=> 1,
-			), 
-			array(
-				'id' 			=> $usr_id, 
-				'meta_key' 		=> 2,
-				'meta_value' 	=> $u_pass,
-				'meta_group' 	=> 1,
-			)
-		);
-		$mta = $this->db->insert_batch('meta', $meta);
-
-		if ($usr && $mta) {
+		if ($usr) {
 			return true;
 		} else {
 			return false;
 		}	
 	}
 
+	public function update($uid, $object)
+	{
+		$this->db->where('uid', $uid);
+		$up = $this->db->update('user', $object);
+		if ($up) {
+			return true;
+		} else {
+			return false;
+		}
+		
+	}
+
 	public function delete($id)
 	{
+		$this->db->where('uid', $id);
+		$d = $this->db->delete('user');
+		if ($d) {
+			return true;
+		} else {
+			return false;
+		}
 		
 	}
 
 	public function login($name, $pass)
 	{
 		$this->db->where('u_name', $name);
-		$query = $this->db->get('user');
-		// cek bahwa user ada
-		if ($query->num_rows() > 0) {
-			$user = $query->row();
-			// cek password masih di meta atau gx
-			if ($user->u_pass == '0') {
-				// kalo password mash di meta
-				$sql = "
-					UPDATE meta
-					SET meta_value = `meta_value` + 1
-					WHERE
-						id = ". $user->uid ."
-					AND meta_key = 0
-					AND meta_group = 1
-				";
-				$this->db->query($sql);
+		$sql = $this->db->get('user');
 
-				$this->db->where('id', $user->uid);
-				$this->db->where('meta_key', "1");
-				$this->db->where('meta_group', "1");
-				$meta = $this->db->get('meta')->row();
-				if ($meta->meta_value == $pass) {
-					$array = array(
-						'u_name' => $user->u_name,
-						'relasi' => $user->rel_id,
-						'uid' => $user->uid,
-						'u_nicename' => $user->u_nicename,
-						'u_level' => $user->u_level,
-						'login' => true,
-						'pass_tmp' => true
-					);
-				} else {
-					$array = array(
-						'login' => false
-					);
-					$this->session->set_flashdata('msg', '<div class="alert alert-danger" role="alert">Password yang anda masukkan salah </div>');
-				}
-			} elseif ($user->u_pass == md5($pass)) {
-				// kalo password udah di user
-				$sql = "
-					UPDATE meta
-					SET meta_value = `meta_value` + 1
-					WHERE
-						id = ". $user->uid ."
-					AND meta_key = 0
-					AND meta_group = 1
-				";
-				$this->db->query($sql);
-				
-				$array = array(
-					'u_name' => $user->u_name,
-					'relasi' => $user->rel_id,
-					'uid' => $user->uid,
-					'u_nicename' => $user->u_nicename,
-					'u_level' => $user->u_level,
-					'login' => true,
-					'pass_tmp' => false
-				);
-			} else {
-				$array = array(
-					'login' => false
-				);
-				$this->session->set_flashdata('msg', '<div class="alert alert-danger" role="alert">Password yang anda masukkan salah loh</div>');
-			}
-		} else {
+		if ($sql->num_rows() <= 0) {
 			$array = array(
 				'login' => false
 			);
-
-			$this->session->set_flashdata('msg', '<div class="alert alert-danger" role="alert">Anda belum terdaftar</div>');
+		} else {
+			$user 	= $sql->row();
+			$reg 	= ($user->u_reg == 0) ? true : false;
+			$pw 	= (!$reg) ? md5($pass) : $pass ;
+			if ($pw != $user->u_pass) {
+				$array = array(
+					'login' => false
+				);
+			} else {
+				$array = array(
+					'u_name' 		=> $user->u_name,
+					'relasi' 		=> $user->rel_id,
+					'uid' 			=> $user->uid,
+					'u_nicename' 	=> $user->u_nicename,
+					'u_level' 		=> $user->u_level,
+					'login' 		=> true,
+					'pass_tmp' 		=> $reg,
+				);
+				if ($array['u_level'] == 3) {
+					$this->db->select('id_dosen');
+					$this->db->where('id_mhs', $user->rel_id);
+					$sql = $this->db->get('mahasiswa')->row();					
+					$this->session->set_userdata(array('id_dosen' => $sql->id_dosen));
+				}
+			}
+			
 		}
-		$this->session->set_userdata( $array );
+
+		if (!$array['login']) {
+			$this->session->set_flashdata('msg', '<div class="alert alert-danger" role="alert">Username atau password salah !!!</div>');
+		}	
+
+		$this->session->set_userdata( $array );		
 	}
 
 	public function _filter()
@@ -144,6 +108,33 @@ class M_user extends CI_Model {
 		$find = $this->session->flashdata('find');
 		if (!empty($find)) {
 			$this->db->like('u_nicename', $find);
+		}
+	}
+
+	public function profile($uid)
+	{
+		$id = $uid;
+		$this->db->select('u_level');
+		$this->db->where('uid', $id);
+		$lv = $this->db->get('user')->row();
+		if (!empty($id)) {
+			if ($lv->u_level == 3) {
+				$sql = "
+					select judul, u_name, u_pass, u_reg, uid, u_nicename, u_level
+					from user, mahasiswa
+					where
+						uid = $id
+					AND rel_id = id_mhs
+				";
+			} elseif ($lv->u_level == 1 || $lv->u_level == 2) {
+				$sql = "
+					select u_name, u_pass, u_reg, uid, u_nicename, u_level
+					from user
+					where
+						uid = $id
+				";
+			}
+			return $this->db->query($sql);
 		}
 	}
 

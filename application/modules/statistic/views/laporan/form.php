@@ -4,14 +4,15 @@
 		<input type="text" class="form-control title" name="title" placeholder="Kategori Laporan">
 	</div>
 	<div class="form-group">
-		<textarea class='ket-lap form-control' name='ket'>
-			
-		</textarea>
+		<textarea class='ket-lap form-control' name='ket'></textarea>
 	</div>
 	<input type="hidden" value="0" class='ac'name='ac'>
 
 </form>
-<div class="text-right"><button type="submit" class="btn btn-primary">Submit</button></div>
+<div class="text-right">
+	<button type="button" class="btn btn-danger">Kembali</button>
+	<button type="submit" class="btn btn-primary">Submit</button>
+</div>
 <script>
 	$(document).ready(function() {
 		tinymce.init({
@@ -22,6 +23,10 @@
 		            tinymce.triggerSave();
 		        });
 		    }
+        });
+
+        $('.btn-danger').click(function() {
+        	$('.st_lap').load('statistic/laporan');
         });
 
         $('.btn-primary').click(function() {

@@ -12,6 +12,79 @@
 
 		});
 
+		$(".frm-umum").validate({
+			ignore: [],
+		
+			errorClass: "error",
+			rules:{
+				komen:{
+					required:true
+				}
+			},
+			errorPlacement: function (error, element) {
+	            //error.appendTo( element.parent("div"));
+	            error.insertAfter(element);
+	        },
+	        highlight: function (element, validClass) {
+	            $(element).parent().addClass('has-error');
+	        },
+	        unhighlight: function (element, validClass) {
+	            $(element).parent().removeClass('has-error');
+	        },
+	  		submitHandler: function(form) {
+	  			$.ajax({
+					url:'bimbingan/kmn_umum',
+					dataType:'json',
+					type:'post',
+					cache:false,
+					data:$(".frm-umum").serialize(),
+					beforeSend:function(){
+						$('.ac-btn').prop('disabled', true);
+					},
+					success:function(json){
+						if(json.stat){
+							$(".content").load('statistic');
+			                // $(".title").html(title);
+						}
+						$('.ac-btn').prop('disabled', false);
+					}
+				});
+	    		return false;
+	  		}
+		});
+		$('.data-komen').show(function() {
+			var 
+				data 	= $.parseJSON($('data komen').html()),
+				tmp  	= $('.data-komen');
+			var 
+				fun = {
+					"warna" : function () {
+						if (this.level == 1) {
+							return "info";
+						} else if (this.level == 2){
+							return "success";
+						} else {
+							return "default";
+						};
+					},
+				};
+			$.extend(true, data, fun);
+
+			var
+				mst		= Mustache.render(tmp.html(), data);
+
+			tmp.html(mst);
+		});
+		$(".scroll").slimScroll({
+		    position        : 'right',
+		    height          : '250px',
+		    color			: '#ECF0F1',
+		    railVisible     : false,
+		    alwaysVisible   : true,
+		    disableFadeOut  : true,
+		    wheelStep       : 50
+		});
+
 		$(".title").hover(
 			function () {
 				$(this).find(".aksi").show();
@@ -97,7 +170,7 @@
 				data: 'id='+id,
 				cache: false,
 				success: function (json) {
-					$('.st_lap').load('statistic/laporan/detil', function () {
+					$('.layout').load('statistic/laporan/detil', function () {
 						$('h3').html(json.title);
 						$('p').html(json.ket);
 					});

@@ -26,6 +26,33 @@
 	});
 
 	$(document).ready(function() {
+
+		$('.myForm').validate({
+			ignore: [],
+			submitHandler: function(form) {
+				$.ajax({
+					url: 'bimbingan/update_file',
+					type: 'post',
+					dataType: 'json',
+					data: $('.myForm').serialize(),
+					success: function  (json) {
+						if (json.stat) {
+							$('.content').load('bimbingan');
+						};
+					}
+				})
+				.done(function() {
+					console.log("success");
+				})
+				.fail(function() {
+					console.log("error");
+				})
+				.always(function() {
+					console.log("complete");
+				});
+				
+			}
+		});
 		
 		$('.upl-btn').click(function() {
 			var 
@@ -48,12 +75,12 @@
 				processData 	: false,  // tell jQuery not to process the data
 				contentType 	: false  // tell jQuery not to set contentType
 			});
-			$('.cat-id').val('1');
-			$('.upl-in-file').val('')
-			$('.dsc-file').val('');
-			$('.cat').load('bimbingan/cat/'+<?php echo $this->session->userdata('uid'); ?>);
+			$('.content').load('bimbingan');
+			// $('.cat-id').val('1');
+			// $('.upl-in-file').val('')
+			// $('.dsc-file').val('');
+			// $('.cat').load('bimbingan/cat/'+<?php echo $this->session->userdata('uid'); ?>);
 		});	
-		
 
 		$('.btn-file :file').on('fileselect', function(event, numFiles, label) {
 

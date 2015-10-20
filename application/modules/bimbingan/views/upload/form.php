@@ -18,6 +18,7 @@
 
 <form method="post" class="myForm" action="#" enctype="multipart/form-data">
 	<!-- taxonomy id -->
+	<input type="hidden" name='pid' class='upl-pid' value="">
 	<div class="form-group">
 		<?php  
 		$opt['1'] = "Uncategories";
@@ -38,10 +39,12 @@
 		</span>
 		<input type="text" class="form-control upl-in-file" readonly>
 	</div>
-
+	<div class="ac-up"></div>
 </form>
 <!-- execution :D -->
-<button type="button" class="btn btn-default upl-btn">Simpan</button>
+<div class="but">
+	<button type="button" class="btn btn-default upl-btn">Simpan</button>
+</div>
 <?php  
 	$this->load->view('upload/js');
 ?>

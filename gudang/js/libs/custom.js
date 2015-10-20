@@ -2,7 +2,7 @@ var expand = true;
 
 // Default
 var 
-	module = 'jadwal',
+	module = 'statistic',
 	title  = 'BIMBOL';
 $.ajax({
     url: module,

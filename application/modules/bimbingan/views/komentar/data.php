@@ -1,34 +1,37 @@
-<data>
-	<komen>
-		
-	</komen>
+<?php  
+	$msg['pesan'] = array();
+	foreach ($pesan as $data) {
+		$json = json_decode($data->p_name);
+		$d = array(
+			'sender' => $json->sender,
+			'level' => $json->level,
+			'tanggal' => $json->tanggal,
+			'wasiat' => $json->wasiat,
+		);
+		array_push($msg['pesan'] , $d);
+	}
+?>
+<data class='merem'>
+	<pesan>
+		<?php  
+		echo json_encode($msg);
+		?>
+	</pesan>
 </data>
 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 	<div class="row">
 		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 group">
-			<legend><?php echo $meta['k_type'] ?></legend>		
-			<?php  
-			if (!empty($meta['dosen'])) {
-				?>
-			<div class="form-group">
-				<?php  
-				if ($this->session->userdata('u_level') == 2) {
-					$opt[] = '';
-					// foreach ($cat as $key) {
-					// 	$json = json_decode($key->t_name);
-					// 	$opt[$key->TID] = $json->title;
-					// }
-					echo form_dropdown('opt', $opt, set_value(empty($default['cat']) ? '' : $dafault['cat']), 'class="form-control opt" required="required"');
-				}
-				?>
-			</div>	
-				<?php
-			}
-			?>		
-			<div class="form-group">
-				<textarea name="komen" id="inputKomen" class="form-control inputKomen" rows="3" required="required"></textarea>
-			</div>
-			<button type="button" class="btn btn-default">Kirim</button>
+			<legend><?php echo $meta['k_type'] ?></legend>				
+			<form class='frm-umum' method="POST" role="form">	
+				<input class='typ' type="hidden" name='type' value='3'>			
+				<input class='pid' type="hidden" name='pid' value=''>
+				<div class="form-group">
+					<textarea name="komen" id="komen" class="form-control komen" rows="3" required="required"></textarea>	
+				</div>
+				<div class="text-right">
+					<button type="submit" class="btn btn-primary msg-btn">Kirim</button>
+				</div>
+			</form>
 		</div>
 	</div>
 	<br>
@@ -53,21 +56,16 @@
 				<?php
 			}
 			?>
-			<div class="scroll">
-				<div class="alert alert-success" role="alert">
-					<b>Pembimbing</b> <small class="ket"> at 15/08/2015 07:00</small>
+			<div class="scroll data-pesan">
+				{{#pesan}}
+				<div class="alert alert-{{warna}}" role="alert">
+					<b> {{sender}} </b> <small class="ket"> at {{tanggal}}</small>
 					<br>
 					<p>
-						Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nam cursus. Morbi ut mi. Nullam enim leo, egestas id, condimentum at, laoreet mattis, massa.
+						{{wasiat}}
 					</p>
 				</div>
-				<div class="alert text-right">
-					<b>You</b> <small class="ket"> at 15/08/2015 07:00</small>
-					<br>
-					<p>
-						Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nam cursus. Morbi ut mi. Nullam enim leo, egestas id, condimentum at, laoreet mattis, massa.
-					</p>
-				</div>
+				{{/pesan}}
 			</div>
 		</div>
 	</div>

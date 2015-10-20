@@ -5,6 +5,76 @@
     -o-transition: all 0.3s ease-out;
     transition: all 0.3s ease-out;*/
 }
+.green{
+    background-color: #004358 !important;
+}
+.green-2{
+    background-color: #1F8A70 !important;
+}
+.yellow{
+    background-color: #FFE11A !important;
+}
+.yellow-2{
+    background-color: #FD7400 !important;
+}
+/*
+ * Component: Info Box
+ * -------------------
+ */
+.info-box {
+  display: block;
+  min-height: 90px;
+  background: #fff;
+  width: 100%;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+  margin-bottom: 15px;
+  color: #fff
+}
+.info-box small {
+  font-size: 14px;
+}
+.info-box-icon {
+  border-top-left-radius: 2px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 2px;
+  display: block;
+  float: left;
+  height: 90px;
+  width: 90px;
+  /*text-align: center;*/
+  padding-left: 23px;
+  font-size: 45px;
+  line-height: 90px;
+  background: rgba(0, 0, 0, 0.2);
+}
+.info-box-icon > img {
+  max-width: 100%;
+}
+.info-box-content {
+  padding: 5px 10px;
+  margin-left: 90px;
+}
+.info-box-number {
+  display: block;
+  /*font-weight: bold;*/
+  font-size: 36px;
+}
+.info-box-text {
+    padding-top: 10px;
+  display: block;
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.info-box-text {
+  text-transform: uppercase;
+}
+.info-box-more {
+  display: block;
+}
 
 .merem{
 	display: none;
@@ -14,7 +84,7 @@
 .navbar-inverse .navbar-nav>.active>a:hover, 
 .navbar-inverse .navbar-nav>.active>a:focus {
   color: #fff;
-  background-color: #19C8AF !important;
+  background-color: #003646 !important;
 }
 
 .group{
@@ -31,11 +101,11 @@ legend{
 	margin-bottom: 20px;
 }
 .navbar{
-	background: #2B3643 !important;
+	background: #003646 !important;
 	min-height: 40px;
 }
 body{
-	background: #364150;
+	background: #004358;
 	margin-top: 40px;
 }
 .dropdown a, .navbar-brand{
@@ -49,7 +119,7 @@ body{
 	color: #b4bcc8
 }
 .side-nav{
-	background: #364150;
+	background: #004358;
 	top: 40px;
 	font-weight: normal;
 }
@@ -63,12 +133,12 @@ th{
 	color: #b4bcc8
 }
 .side-nav li a:hover{
-	background-color: #2F3845 !important;
+	background-color: #003646 !important;
 	color: #fff !important;
 }
 .side-nav li a:focus {
     outline: none;
-    background-color: #3FD5C0 !important;
+    background-color: #003646 !important;
 }
 .side-nav{
 	overflow: hidden;
@@ -80,7 +150,7 @@ th{
 }
 .top-nav li a:hover,
 .top-nav li a:focus{
-    background: #364150 !important;
+    background: #003646 !important;
 }
 .top-nav li ul li a:hover{
     background: #F1F1F1 !important;

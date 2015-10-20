@@ -12,7 +12,7 @@ class Mahasiswa extends MX_Controller {
 	public function index($offset = 0)
 	{
 		$this->load->library('table');	
-		$this->load->model('dosen/m_dos');
+		// $this->load->model('dosen/m_dos');
 
 		$perpage     = 20;
 
@@ -22,8 +22,7 @@ class Mahasiswa extends MX_Controller {
 		//untuk konfigurasi pagination
 
 		$mahasiswa  = $this->m_mhs->getAll(array('perpage' => $perpage, 'offset' => $offset));
-		$data_dosen = $this->m_dos->getAll()->result();
-
+		$data_dosen = $this->m_mhs->getDosen()->result();
 		foreach ($data_dosen as $key) {
 			$dosen[$key->id_dosen] = $key->nama;
 		}
@@ -77,10 +76,13 @@ class Mahasiswa extends MX_Controller {
 
 
 			$no++;
-			$action = '<div class="aksi" id="aksi">
-							<a href="Javascript:;" class="edit" onClick="edit(' . $rec->id_mhs . ')">edit</a>&nbsp
-							<a href="Javascript:;" onClick="hapus(' . $rec->id_mhs . ',' . (($page*$perpage)-$perpage) . ',' . $page . ')">hapus</a>
-						</div>';
+			$action = '';
+			if ($this->session->userdata('u_level') == 1) {
+				$action = '<div class="aksi" id="aksi">
+								<a href="Javascript:;" class="edit" onClick="edit(' . $rec->id_mhs . ')">edit</a>&nbsp
+								<a href="Javascript:;" onClick="hapus(' . $rec->id_mhs . ',' . (($page*$perpage)-$perpage) . ',' . $page . ')">hapus</a>
+							</div>';
+			}
 			$this->table->add_row(
 				array("data" => $no, "style"=>"min-width:30px"),
 				array("data" => ucwords(strtolower($rec->m_nama)) . $action, "style"=>"min-width:190px"),
@@ -123,10 +125,11 @@ class Mahasiswa extends MX_Controller {
 			unset($ecp);
 
 			$id = $this->m_mhs->insert($data);
+
 			$user = array(
 				'rel_id' 		=> $id,
 				'u_name' 		=> $nip, 
-				'u_pass' 		=> $pw,
+				'u_pass' 		=> ''.$pw.'',
 				'u_nicename' 	=> $this->input->post('nama'),
 				'u_level' 		=> '3'
 			);
