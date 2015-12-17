@@ -35,6 +35,7 @@ class Jadwal extends MX_Controller {
 			$waktu_istirahat  	= $json->jam_istirahat; // 5 menit
 			$waktu_ujian      	= $json->jam_ujian; // 45 menit
 			$batas            	= floor(($this->m_jadwal->query($sql)->num_rows()) / $jumlah_penguji);
+			$id_mahasiswa_terakhir = $this->m_jadwal->query('select id_mhs from mahasiswa limit 1')->row();
 
 			// setingan table
 			$template_table		= array('table_open' => ' <table class="table table-bordered">');
@@ -61,6 +62,7 @@ class Jadwal extends MX_Controller {
 		$pindah_hari 	= (($kondisi == ">") 
 								? $batas_ujian 
 								: $this->jam($batas_ujian, $waktu_ujian, "-"));
+
 
 		/**
 		CARI PENGUJI LOK 
@@ -172,73 +174,104 @@ class Jadwal extends MX_Controller {
 			$jam_selesai = $this->jam($jam_mulai, $waktu_ujian);
 			foreach ($res as $rec) {
 				$a++;
-				if (!in_array($rec->id_dosen, $dos) && !in_array($rec->id_mhs, $mhs)) {
-					$no++;
-					array_push($mhs, $rec->id_mhs);
-					array_push($dos, $rec->id_dosen);
-					if ($a == 1) {
-						if ($hari == 1) {
-							$table .= "
-								<tr class='alert-success text-center batas'>
-									<td colspan='7'>$tanggal_mulai</td>
-								</tr>
+				if ($rec->id_mhs == $id_mahasiswa_terakhir->id_mhs AND (count($mhs)) != (count($res)-1)) {
+					unset($dos);
+					$dos = array();
+					// echo "<hr>";
+					break;
+				} 
+				else {
+					if($rec->id_mhs == $id_mahasiswa_terakhir->id_mhs) {
+						// if (in_array($rec->id_dosen, $dos)) {
+						// 	echo "<hr>";
+						// }
+						$table .= "
+									<tr>
+										<td rowspan='2'>$no</td>
+										<td rowspan='2'>" . ucwords(strtolower($rec->m_nama)) . "</td>
+										<td rowspan='2'>" . $rec->d_nama . "</td>
+										<td>" . (!empty($uji[$u][$b]) ? $uji[$u][$b] : 'gx ada pengujinya') . "</td>
+										<td rowspan='2'>" . $rec->judul . "</td>
+										<td rowspan='2' class='text-center'> R-" . $a . " </td>
+									</tr>
 							";
-							$hari--;
+							$b++;
+							$table .= "<tr>
+										<td>" . (!empty($uji[$u][$b]) ? $uji[$u][$b] : 'gx ada pengujinya') . "</td>
+									</tr>";
+							$b++;
+						array_push($mhs, $rec->id_mhs);
+					} elseif (!in_array($rec->id_dosen, $dos) && !in_array($rec->id_mhs, $mhs)) {
+						// echo $rec->id_mhs.'<br>';
+						$no++;
+						array_push($mhs, $rec->id_mhs);
+						array_push($dos, $rec->id_dosen);
+						
+						if ($a == 1) {
+							if ($hari == 1) {
+								$table .= "
+									<tr class='alert-success text-center batas'>
+										<td colspan='7'>$tanggal_mulai</td>
+									</tr>
+								";
+								$hari--;
+							} else {
+								$table .= "
+									<tr class='batas'>
+										<td colspan='7' class='text-center'>istirahat</td>
+									</tr>
+								";
+							}
+							$table .= "
+									<tr>
+										<td rowspan='2'>$no</td>
+										<td rowspan='2'>" . ucwords(strtolower($rec->m_nama)) . "</td>
+										<td rowspan='2'>" . $rec->d_nama . "</td>
+										<td>" . (!empty($uji[$u][$b]) ? $uji[$u][$b] : 'gx ada pengujinya') . "</td>
+										<td rowspan='2'>" . $rec->judul . "</td>
+										<td style='vertical-align:middle' rowspan='". $batas*2 ."'> 
+											<div class='verticalText'>
+												" . $jam_mulai . "-" . $jam_selesai . "
+											</div> 
+										</td>
+										<td rowspan='2' class='text-center'> R-" . $a . " </td>
+									</tr>
+							";
+							$b++;
+							
+							$table .= "<tr>
+										<td>" . (!empty($uji[$u][$b]) ? $uji[$u][$b] : 'gx ada pengujinya') . "</td>
+									</tr>";
+							$b++;
+							continue;
 						} else {
 							$table .= "
-								<tr class='batas'>
-									<td colspan='7' class='text-center'>istirahat</td>
-								</tr>
+									<tr>
+										<td rowspan='2'>$no</td>
+										<td rowspan='2'>" . ucwords(strtolower($rec->m_nama)) . "</td>
+										<td rowspan='2'>" . $rec->d_nama . "</td>
+										<td>" . (!empty($uji[$u][$b]) ? $uji[$u][$b] : 'gx ada pengujinya') . "</td>
+										<td rowspan='2'>" . $rec->judul . "</td>
+										<td rowspan='2' class='text-center'> R-" . $a . " </td>
+									</tr>
 							";
+							$b++;
+							$table .= "<tr>
+										<td>" . (!empty($uji[$u][$b]) ? $uji[$u][$b] : 'gx ada pengujinya') . "</td>
+									</tr>";
+							$b++;
 						}
-						$table .= "
-								<tr>
-									<td rowspan='2'>$no</td>
-									<td rowspan='2'>" . ucwords(strtolower($rec->m_nama)) . "</td>
-									<td rowspan='2'>" . $rec->d_nama . "</td>
-									<td>" . (!empty($uji[$u][$b]) ? $uji[$u][$b] : 'gx ada pengujinya') . "</td>
-									<td rowspan='2'>" . $rec->judul . "</td>
-									<td style='vertical-align:middle' rowspan='". $batas*2 ."'> 
-										<div class='verticalText'>
-											" . $jam_mulai . "-" . $jam_selesai . "
-										</div> 
-									</td>
-									<td rowspan='2' class='text-center'> R-" . $a . " </td>
-								</tr>
-						";
-						$b++;
 						
-						$table .= "<tr>
-									<td>" . (!empty($uji[$u][$b]) ? $uji[$u][$b] : 'gx ada pengujinya') . "</td>
-								</tr>";
-						$b++;
-						continue;
 					} else {
-						$table .= "
-								<tr>
-									<td rowspan='2'>$no</td>
-									<td rowspan='2'>" . ucwords(strtolower($rec->m_nama)) . "</td>
-									<td rowspan='2'>" . $rec->d_nama . "</td>
-									<td>" . (!empty($uji[$u][$b]) ? $uji[$u][$b] : 'gx ada pengujinya') . "</td>
-									<td rowspan='2'>" . $rec->judul . "</td>
-									<td rowspan='2' class='text-center'> R-" . $a . " </td>
-								</tr>
-						";
-						$b++;
-						$table .= "<tr>
-									<td>" . (!empty($uji[$u][$b]) ? $uji[$u][$b] : 'gx ada pengujinya') . "</td>
-								</tr>";
-						$b++;
+						$a--;
+						continue;
 					}
-
-				} else {
-					$a--;
-					continue;
 				}
 
 				if ($a == $batas) {
 					unset($dos);
 					$dos = array();
+					// echo "<hr>";
 					break;
 				}
 			}
@@ -253,6 +286,7 @@ class Jadwal extends MX_Controller {
 			$urut++;
 			$u++;
 		}
+		// echo $id_mahasiswa_terakhir->id_mhs;
 
 		$table .= "</table>";
 
