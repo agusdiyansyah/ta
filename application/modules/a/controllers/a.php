@@ -14,7 +14,7 @@ class A extends MX_Controller {
 		$config['smtp_port']= "587";
 		$config['smtp_timeout']= "10";
 		$config['smtp_user']= "tes1890@gmail.com";//isi dengan email kamu
-		$config['smtp_pass']= "diyan8@coba"; // isi dengan password kamu
+		$config['smtp_pass']= ""; // isi dengan password kamu
 		$config['crlf']="\r\n"; 
 		$config['newline']="\r\n"; 
 		$config['wordwrap'] = TRUE;
